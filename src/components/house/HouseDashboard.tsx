@@ -17,4 +17,4 @@ const HouseDashboard = () => {
   );
 };
 
-export default HouseDashboard; 
+export default HouseDashboard;

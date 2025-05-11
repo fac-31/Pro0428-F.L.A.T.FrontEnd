@@ -1,14 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, Link as RouterLink } from 'react-router-dom';
-import {
-  Container,
-  Box,
-  Typography,
-  TextField,
-  Button,
-  Link,
-  Paper,
-} from '@mui/material';
+import { Container, Box, Typography, TextField, Button, Link, Paper } from '@mui/material';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -69,12 +61,7 @@ const Login = () => {
               value={formData.password}
               onChange={handleChange}
             />
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-            >
+            <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
               Sign In
             </Button>
             <Box sx={{ textAlign: 'center' }}>
@@ -89,4 +76,4 @@ const Login = () => {
   );
 };
 
-export default Login; 
+export default Login;

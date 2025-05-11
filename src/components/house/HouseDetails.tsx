@@ -1,14 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {
-  Container,
-  Box,
-  Typography,
-  TextField,
-  Button,
-  Paper,
-  Grid,
-} from '@mui/material';
+import { Container, Box, Typography, TextField, Button, Paper, Grid } from '@mui/material';
 
 const HouseDetails = () => {
   const navigate = useNavigate();
@@ -92,20 +84,12 @@ const HouseDetails = () => {
             />
             <Grid container spacing={2} sx={{ mt: 2 }}>
               <Grid item xs={6}>
-                <Button
-                  fullWidth
-                  variant="outlined"
-                  onClick={() => navigate('/house-setup')}
-                >
+                <Button fullWidth variant="outlined" onClick={() => navigate('/house-setup')}>
                   Back
                 </Button>
               </Grid>
               <Grid item xs={6}>
-                <Button
-                  type="submit"
-                  fullWidth
-                  variant="contained"
-                >
+                <Button type="submit" fullWidth variant="contained">
                   Create House
                 </Button>
               </Grid>
@@ -117,4 +101,4 @@ const HouseDetails = () => {
   );
 };
 
-export default HouseDetails; 
+export default HouseDetails;

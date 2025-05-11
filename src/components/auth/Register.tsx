@@ -1,14 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, Link as RouterLink } from 'react-router-dom';
-import {
-  Container,
-  Box,
-  Typography,
-  TextField,
-  Button,
-  Link,
-  Paper,
-} from '@mui/material';
+import { Container, Box, Typography, TextField, Button, Link, Paper } from '@mui/material';
 
 const Register = () => {
   const navigate = useNavigate();
@@ -93,17 +85,12 @@ const Register = () => {
               value={formData.confirmPassword}
               onChange={handleChange}
             />
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-            >
+            <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
               Sign Up
             </Button>
             <Box sx={{ textAlign: 'center' }}>
               <Link component={RouterLink} to="/login" variant="body2">
-                {"Already have an account? Sign In"}
+                {'Already have an account? Sign In'}
               </Link>
             </Box>
           </Box>
@@ -113,4 +100,4 @@ const Register = () => {
   );
 };
 
-export default Register; 
+export default Register;

@@ -1,14 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {
-  Container,
-  Box,
-  Typography,
-  Button,
-  TextField,
-  Paper,
-  Grid,
-} from '@mui/material';
+import { Container, Box, Typography, Button, TextField, Paper, Grid } from '@mui/material';
 
 const HouseSetup = () => {
   const navigate = useNavigate();
@@ -39,7 +31,7 @@ const HouseSetup = () => {
           <Typography component="h1" variant="h5" align="center" gutterBottom>
             House Setup
           </Typography>
-          
+
           {!showJoinInput ? (
             <Grid container spacing={2} sx={{ mt: 2 }}>
               <Grid item xs={12}>
@@ -53,11 +45,7 @@ const HouseSetup = () => {
                 </Button>
               </Grid>
               <Grid item xs={12}>
-                <Button
-                  fullWidth
-                  variant="outlined"
-                  onClick={handleCreateHouse}
-                >
+                <Button fullWidth variant="outlined" onClick={handleCreateHouse}>
                   Create New House
                 </Button>
               </Grid>
@@ -77,20 +65,12 @@ const HouseSetup = () => {
               />
               <Grid container spacing={2} sx={{ mt: 1 }}>
                 <Grid item xs={6}>
-                  <Button
-                    fullWidth
-                    variant="outlined"
-                    onClick={() => setShowJoinInput(false)}
-                  >
+                  <Button fullWidth variant="outlined" onClick={() => setShowJoinInput(false)}>
                     Back
                   </Button>
                 </Grid>
                 <Grid item xs={6}>
-                  <Button
-                    type="submit"
-                    fullWidth
-                    variant="contained"
-                  >
+                  <Button type="submit" fullWidth variant="contained">
                     Join House
                   </Button>
                 </Grid>
@@ -103,4 +83,4 @@ const HouseSetup = () => {
   );
 };
 
-export default HouseSetup; 
+export default HouseSetup;
