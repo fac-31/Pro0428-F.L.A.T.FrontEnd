@@ -5,7 +5,7 @@ import Login from './components/auth/Login';
 import Register from './components/auth/Register';
 import HouseSetup from './components/house/HouseSetup';
 import HouseDetails from './components/house/HouseDetails';
-import HouseDashboard from './components/house/HouseDashboard';
+import HouseDashboard from './pages/Dashboard/HouseDashboard';
 
 const theme = createTheme({
   palette: {
