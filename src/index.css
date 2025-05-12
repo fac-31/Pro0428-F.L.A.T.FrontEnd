@@ -1,5 +1,14 @@
+@font-face {
+  font-family: 'EurostileExtendedBlack';
+  src:
+    url('./assets/fonts/EurostileExtendedBlack.woff2') format('woff2'),
+    url('./assets/fonts/EurostileExtendedBlack.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: 'EurostileExtendedBlack', 'Jost', sans-serif;
   line-height: 1.5;
   font-weight: 400;
   font-synthesis: none;
