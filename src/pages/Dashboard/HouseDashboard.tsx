@@ -3,12 +3,7 @@ import { Container, Typography, Paper, Box, Button } from '@mui/material';
 const HouseDashboard = () => {
   return (
     <Container maxWidth="lg">
-      <Box
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        minHeight="80vh"
-      >
+      <Box display="flex" justifyContent="center" alignItems="center" minHeight="80vh">
         <Paper
           elevation={4}
           sx={{
@@ -23,24 +18,66 @@ const HouseDashboard = () => {
             backgroundColor: '#d7ebf5',
           }}
         >
-          <Typography variant="h4" sx={{ mb: 2, fontWeight: 500, letterSpacing: '0.2em', fontFamily: 'EurostileExtendedBlack', color: '#344359'}}>
+          <Typography
+            variant="h4"
+            sx={{
+              mb: 2,
+              fontWeight: 500,
+              letterSpacing: '0.2em',
+              fontFamily: 'EurostileExtendedBlack',
+              color: '#344359',
+            }}
+          >
             FLAT
           </Typography>
 
           <div className="navbar-container">
-            <Box display="flex" justifyContent="center" mb={2}
-                        sx={{ position: 'absolute', top: '18%', right: 100}}
->
-              <Button href="#" variant="contained" sx={{ mx: 1, fontFamily: 'EurostileExtendedBlack', backgroundColor:'#344359', color:'#fff', '&:hover': {backgroundColor: '#748096'}}}>
+            <Box
+              display="flex"
+              justifyContent="center"
+              mb={2}
+              sx={{ position: 'absolute', top: '18%', right: 100 }}
+            >
+              <Button
+                href="#"
+                variant="contained"
+                sx={{
+                  mx: 1,
+                  fontFamily: 'EurostileExtendedBlack',
+                  backgroundColor: '#344359',
+                  color: '#fff',
+                  '&:hover': { backgroundColor: '#748096' },
+                }}
+              >
                 Cleaning
               </Button>
-              <Button href="#" variant="contained" sx={{ mx: 1, fontFamily: 'EurostileExtendedBlack', backgroundColor:'#344359', color:'#fff', '&:hover': {backgroundColor: '#748096'}}}>
+              <Button
+                href="#"
+                variant="contained"
+                sx={{
+                  mx: 1,
+                  fontFamily: 'EurostileExtendedBlack',
+                  backgroundColor: '#344359',
+                  color: '#fff',
+                  '&:hover': { backgroundColor: '#748096' },
+                }}
+              >
                 Bills
               </Button>
-              <Button href="#" variant="contained" sx={{ mx: 1, fontFamily: 'EurostileExtendedBlack', backgroundColor:'#344359', color:'#fff', '&:hover': {backgroundColor: '#748096'}}}>
+              <Button
+                href="#"
+                variant="contained"
+                sx={{
+                  mx: 1,
+                  fontFamily: 'EurostileExtendedBlack',
+                  backgroundColor: '#344359',
+                  color: '#fff',
+                  '&:hover': { backgroundColor: '#748096' },
+                }}
+              >
                 Review
               </Button>
-        </Box>
+            </Box>
           </div>
           {/* Fridge handle */}
           <Box
@@ -112,4 +149,4 @@ const HouseDashboard = () => {
   );
 };
 
-export default HouseDashboard; 
+export default HouseDashboard;
