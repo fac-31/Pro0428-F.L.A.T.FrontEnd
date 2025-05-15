@@ -1,6 +1,13 @@
+import React, { useState } from 'react';
 import { Container, Typography, Paper, Box, Button } from '@mui/material';
 
 const HouseDashboard = () => {
+  const [isFridgeOpen, setIsFridgeOpen] = useState(false);
+
+  const toggleFridge = () => {
+    setIsFridgeOpen(!isFridgeOpen);
+  };
+
   return (
     <Container maxWidth="lg">
       <Box display="flex" justifyContent="center" alignItems="center" minHeight="80vh">
@@ -9,7 +16,7 @@ const HouseDashboard = () => {
           sx={{
             width: 500,
             height: 800,
-            borderRadius: '80px 80px 20px 20px',
+            borderRadius: '80px 80px 0px 0px',
             position: 'relative',
             display: 'flex',
             flexDirection: 'column',
@@ -48,6 +55,7 @@ const HouseDashboard = () => {
                   color: '#fff',
                   '&:hover': { backgroundColor: '#748096' },
                 }}
+                onClick={toggleFridge}
               >
                 Cleaning
               </Button>
@@ -61,6 +69,7 @@ const HouseDashboard = () => {
                   color: '#fff',
                   '&:hover': { backgroundColor: '#748096' },
                 }}
+                onClick={toggleFridge}
               >
                 Bills
               </Button>
@@ -74,6 +83,7 @@ const HouseDashboard = () => {
                   color: '#fff',
                   '&:hover': { backgroundColor: '#748096' },
                 }}
+                onClick={toggleFridge}
               >
                 Review
               </Button>
@@ -106,11 +116,32 @@ const HouseDashboard = () => {
             />
           </Box>
           {/* End fridge handle */}
+        </Paper>
+
+        <Paper
+          elevation={4}
+          sx={{
+            width: 500,
+            height: 590,
+            borderRadius: '0px 0px 20px 20px',
+            position: 'absolute',
+            top: '25%',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            pt: 4,
+            backgroundColor: '#d7ebf5',
+            transformOrigin: 'left center',
+            transform: isFridgeOpen ? 'rotateY(-85deg)' : 'rotateY(0deg)',
+            transition: 'transform 0.5s ease',
+          }}
+        >
+          {/* Bottom part of the fridge */}
           <Box
             sx={{
               position: 'absolute',
               right: 24,
-              top: '30%',
+              top: '5%',
               width: 60,
               height: 12,
               bgcolor: '#ededed',
@@ -131,18 +162,6 @@ const HouseDashboard = () => {
               }}
             />
           </Box>
-          <Box
-            sx={{
-              position: 'absolute',
-              right: 24,
-              top: '25%',
-              left: 24,
-              height: 2,
-              bgcolor: '#ededed',
-              borderRadius: 1,
-              boxShadow: 1,
-            }}
-          />
         </Paper>
       </Box>
     </Container>
