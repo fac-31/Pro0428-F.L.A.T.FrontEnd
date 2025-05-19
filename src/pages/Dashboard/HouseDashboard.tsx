@@ -2,15 +2,16 @@ import React, { useState } from 'react';
 import { Container, Typography, Paper, Box, Button } from '@mui/material';
 
 const HouseDashboard = () => {
-  const [isFridgeOpen, setIsFridgeOpen] = useState(false);
+  const [isBigDoorOpen, setIsBigDoorOpen] = useState(false);
 
-  const toggleFridge = () => {
-    setIsFridgeOpen(!isFridgeOpen);
+  const toggleBigDoor = () => {
+    setIsBigDoorOpen(!isBigDoorOpen);
   };
 
   return (
     <Container maxWidth="lg">
       <Box display="flex" justifyContent="center" alignItems="center" minHeight="80vh">
+        {/* Fridge Back */}
         <Paper
           elevation={4}
           sx={{
@@ -21,144 +22,133 @@ const HouseDashboard = () => {
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            pt: 4,
             backgroundColor: '#d7ebf5',
+            perspective: '800px',
+            transformStyle: 'preserve-3d',
           }}
         >
-          <Typography
-            variant="h4"
+          {/* Top Door (Static with buttons) */}
+          <Box
             sx={{
-              mb: 2,
-              fontWeight: 500,
-              letterSpacing: '0.2em',
-              fontFamily: 'EurostileExtendedBlack',
-              color: '#344359',
+              position: 'absolute',
+              right: 0,
+              top: 0,
+              width: '100%',
+              height: '30%',
+              background: 'linear-gradient(to right, #eee, #ccc)',
+              borderRadius: '80px 80px 0 0',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              py: 4,
             }}
           >
-            FLAT
-          </Typography>
-
-          <div className="navbar-container">
+            {/* Door Handle */}
             <Box
-              display="flex"
-              justifyContent="center"
-              mb={2}
-              sx={{ position: 'absolute', top: '18%', right: 100 }}
+              sx={{
+                position: 'absolute',
+                left: '10%',
+                top: '37%',
+                width: '0.5em',
+                height: '25%',
+                backgroundColor: '#222',
+                borderRadius: '5vmax',
+              }}
+            />
+            
+            {/* Title */}
+            <Typography
+              variant="h4"
+              sx={{
+                fontWeight: 500,
+                letterSpacing: '0.2em',
+                fontFamily: 'EurostileExtendedBlack',
+                color: '#344359',
+                mt: 2,
+              }}
+            >
+              FLAT
+            </Typography>
+
+            {/* Buttons Container */}
+            <Box
+              sx={{
+                display: 'flex',
+                gap: 2,
+                mb: 2,
+              }}
             >
               <Button
-                href="#"
                 variant="contained"
                 sx={{
-                  mx: 1,
                   fontFamily: 'EurostileExtendedBlack',
                   backgroundColor: '#344359',
                   color: '#fff',
                   '&:hover': { backgroundColor: '#748096' },
                 }}
-                onClick={toggleFridge}
+                onClick={toggleBigDoor}
               >
                 Cleaning
               </Button>
               <Button
-                href="#"
                 variant="contained"
                 sx={{
-                  mx: 1,
                   fontFamily: 'EurostileExtendedBlack',
                   backgroundColor: '#344359',
                   color: '#fff',
                   '&:hover': { backgroundColor: '#748096' },
                 }}
-                onClick={toggleFridge}
+                onClick={toggleBigDoor}
               >
                 Bills
               </Button>
               <Button
-                href="#"
                 variant="contained"
                 sx={{
-                  mx: 1,
                   fontFamily: 'EurostileExtendedBlack',
                   backgroundColor: '#344359',
                   color: '#fff',
                   '&:hover': { backgroundColor: '#748096' },
                 }}
-                onClick={toggleFridge}
+                onClick={toggleBigDoor}
               >
                 Review
               </Button>
             </Box>
-          </div>
-          {/* Fridge handle */}
-          <Box
-            sx={{
-              position: 'absolute',
-              right: 24,
-              top: '20%',
-              width: 60,
-              height: 12,
-              bgcolor: '#ededed',
-              borderRadius: 2,
-              boxShadow: 2,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'flex-end',
-            }}
-          >
-            <Box
-              sx={{
-                width: 8,
-                height: 24,
-                bgcolor: '#a8a4b0',
-                borderRadius: 1,
-                ml: 1,
-              }}
-            />
           </Box>
-          {/* End fridge handle */}
-        </Paper>
 
-        <Paper
-          elevation={4}
-          sx={{
-            width: 500,
-            height: 590,
-            borderRadius: '0px 0px 20px 20px',
-            position: 'absolute',
-            top: '25%',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            pt: 4,
-            backgroundColor: '#d7ebf5',
-            transformOrigin: 'left center',
-            transform: isFridgeOpen ? 'rotateY(-85deg)' : 'rotateY(0deg)',
-            transition: 'transform 0.5s ease',
-          }}
-        >
-          {/* Bottom part of the fridge */}
+          {/* Big Door (now at bottom) */}
           <Box
+            onClick={toggleBigDoor}
             sx={{
               position: 'absolute',
-              right: 24,
-              top: '5%',
-              width: 60,
-              height: 12,
-              bgcolor: '#ededed',
-              borderRadius: 2,
-              boxShadow: 2,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'flex-end',
+              right: 0,
+              bottom: 0,
+              width: '100%',
+              height: '70%',
+              background: 'linear-gradient(to right, #eee, #ccc)',
+              transformOrigin: '100% 50%',
+              transition: 'transform 1s, border-bottom 1s',
+              borderBottom: '5px solid #222',
+              borderRadius: '0 0 20px 20px',
+              transform: isBigDoorOpen ? 'rotateY(120deg)' : 'rotateY(0deg)',
+              cursor: 'pointer',
+              '&:hover': {
+                opacity: 0.9,
+              },
             }}
           >
+            {/* Door Handle */}
             <Box
               sx={{
-                width: 8,
-                height: 24,
-                bgcolor: '#a8a4b0',
-                borderRadius: 1,
-                ml: 1,
+                position: 'absolute',
+                left: '10%',
+                top: '12.5%',
+                width: '0.5em',
+                height: '75%',
+                backgroundColor: '#222',
+                borderRadius: '5vmax',
               }}
             />
           </Box>
