@@ -56,7 +56,7 @@ const HouseDashboard = () => {
                 borderRadius: '5vmax',
               }}
             />
-            
+
             {/* Title */}
             <Typography
               variant="h4"
