@@ -1,11 +1,12 @@
 import React from 'react';
 import { Box, Typography, CircularProgress } from '@mui/material';
+import { CleaningTask, Bills } from 'types/types';
 
 interface FridgeBigDoorProps {
   isOpen: boolean;
   onToggle: () => void;
-  activeSection: 'cleaning' | 'bills' | 'review' | null;
-  data: any;
+  activeSection: 'cleaning' | 'bills' | 'reviews' | null;
+  data: CleaningTask[] | Bills[] | null;
   loading: boolean;
 }
 
@@ -16,23 +17,28 @@ const FridgeBigDoor: React.FC<FridgeBigDoorProps> = ({
   data,
   loading,
 }) => {
-  
   const renderContent = () => {
     if (loading) return <CircularProgress />;
 
-    if (!activeSection) return <Typography variant="h6" sx={{ mt: 4 }}>Select a section above</Typography>;
+    if (!activeSection)
+      return (
+        <Typography variant="h6" sx={{ mt: 4 }}>
+          Select a section above
+        </Typography>
+      );
 
     if (!data || data.length === 0)
       return <Typography sx={{ mt: 4 }}>No data found for {activeSection}</Typography>;
 
-    
     switch (activeSection) {
       case 'cleaning':
         return (
           <Box>
             <Typography variant="h5">Cleaning Tasks</Typography>
-            {data.map((task: any) => (
-              <Typography key={task.id}>• {task.description}</Typography>
+            {(data as CleaningTask[]).map((CleaningTask) => (
+              <Typography key={CleaningTask.cleaning_task_id}>
+                • {CleaningTask.description}: {CleaningTask.task_complete}
+              </Typography>
             ))}
           </Box>
         );
@@ -40,22 +46,15 @@ const FridgeBigDoor: React.FC<FridgeBigDoorProps> = ({
         return (
           <Box>
             <Typography variant="h5">Bills</Typography>
-            {data.map((bill: any) => (
-              <Typography key={bill.id}>
-                • {bill.name}: ${bill.amount.toFixed(2)}
+            {(data as Bills[]).map((bills) => (
+              <Typography key={bills.bill_id}>
+                • {bills.bill_type}: ${parseFloat(bills.bill_amount).toFixed(2)}
+                {bills.paid ? '(✅ Paid)' : '(❌ Unpaid)'}
               </Typography>
             ))}
           </Box>
         );
-      case 'review':
-        return (
-          <Box>
-            <Typography variant="h5">Reviews</Typography>
-            {data.map((review: any) => (
-              <Typography key={review.id}>• {review.comment}</Typography>
-            ))}
-          </Box>
-        );
+
       default:
         return null;
     }
@@ -84,7 +83,6 @@ const FridgeBigDoor: React.FC<FridgeBigDoorProps> = ({
         overflowY: 'auto',
       }}
     >
-
       <Box
         sx={{
           position: 'absolute',

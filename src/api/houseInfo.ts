@@ -1,31 +1,54 @@
-import { supabase } from '../supabaseClient.ts';
+import { CleaningTask, Bills, HouseInfo } from 'types/types';
 
-export const fetchCleaningTasks = async (householdId: string) => {
-  const { data, error } = await supabase
-    .from('cleaning_tasks')
-    .select('*')
-    .eq('household_id', householdId);
+export const fetchCleaningTasks = async (): Promise<CleaningTask[]> => {
+  const res = await fetch('/api/cleaning-tasks', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
 
-  if (error) throw error;
-  return data;
+  if (!res.ok) throw new Error('Failed to fetch cleaning tasks');
+
+  const json = await res.json();
+
+  if (!json.success)
+    throw new Error('Failed to fetch cleaning tasks: ' + (json.message || 'Unknown error'));
+
+  return json.data as CleaningTask[];
 };
 
-export const fetchBills = async (householdId: string) => {
-  const { data, error } = await supabase
-    .from('bills')
-    .select('*')
-    .eq('household_id', householdId);
+export const fetchBills = async (): Promise<Bills[]> => {
+  const res = await fetch('/api/bills', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
 
-  if (error) throw error;
-  return data;
+  if (!res.ok) throw new Error('Failed to fetch bills');
+
+  const json = await res.json();
+
+  if (!json.success) throw new Error('Failed to fetch bills: ' + (json.message || 'Unknown error'));
+
+  return json.data as Bills[];
 };
 
-export const fetchReviews = async (householdId: string) => {
-  const { data, error } = await supabase
-    .from('reviews')
-    .select('*')
-    .eq('household_id', householdId);
+export const fetchHouseInfo = async (): Promise<HouseInfo> => {
+  const res = await fetch('/api/houses', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
 
-  if (error) throw error;
-  return data;
+  if (!res.ok) throw new Error('Failed to fetch house info');
+
+  const json = await res.json();
+
+  if (!json.success)
+    throw new Error('Failed to fetch house info: ' + (json.message || 'Unknown error'));
+
+  return json.data as HouseInfo;
 };

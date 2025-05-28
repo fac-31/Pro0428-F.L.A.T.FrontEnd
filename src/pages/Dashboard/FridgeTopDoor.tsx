@@ -2,11 +2,10 @@ import React from 'react';
 import { Box, Typography, Button } from '@mui/material';
 
 interface FridgeTopDoorProps {
-  houseInfo: any; // you can type this more strictly if you want
   onSectionClick: (section: 'cleaning' | 'bills' | 'review') => void;
 }
 
-const FridgeTopDoor: React.FC<FridgeTopDoorProps> = ({ houseInfo, onSectionClick }) => {
+const FridgeTopDoor: React.FC<FridgeTopDoorProps> = ({ onSectionClick }) => {
   return (
     <Box
       sx={{
@@ -37,7 +36,6 @@ const FridgeTopDoor: React.FC<FridgeTopDoorProps> = ({ houseInfo, onSectionClick
         }}
       />
 
-
       <Typography
         variant="h4"
         sx={{
@@ -50,7 +48,6 @@ const FridgeTopDoor: React.FC<FridgeTopDoorProps> = ({ houseInfo, onSectionClick
       >
         FLAT
       </Typography>
-
 
       <Box
         sx={{

@@ -1,33 +1,38 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Container, Typography } from '@mui/material';
-import { fetchHousehold } from 'api/houseInfo'; 
+import { fetchHouseInfo } from '../../api/houseInfo';
 import Fridge from './Fridge';
+import { HouseInfo } from '../../types/types';
 
 const HouseDashboard = () => {
-  const [houseInfo, setHouseInfo] = useState<any>(null);
+  const [houseInfo, setHouseInfo] = useState<HouseInfo | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const loadHouseInfo = async () => {
+    const fetchData = async () => {
       try {
-        setLoading(true);
-        const data = await fetchHousehold();
+        const data = await fetchHouseInfo();
         setHouseInfo(data);
         setError(null);
-      } catch (err: any) {
-        setError(err.message || 'Failed to fetch household');
+      } catch (err) {
+        if (err instanceof Error) {
+          setError(err.message);
+        } else {
+          setError('An unknown error occurred');
+        }
       } finally {
         setLoading(false);
       }
     };
-    loadHouseInfo(); 
+
+    fetchData();
   }, []);
 
   if (loading) {
     return (
       <Container maxWidth="lg">
-        <Typography>Loading household...</Typography>
+        <Typography>Loading houseInfo...</Typography>
       </Container>
     );
   }
@@ -40,15 +45,15 @@ const HouseDashboard = () => {
     );
   }
 
-  if (!houseInfo) { 
+  if (!houseInfo) {
     return (
       <Container maxWidth="lg">
-        <Typography>No household data found.</Typography>
+        <Typography>No houseInfo data found.</Typography>
       </Container>
     );
   }
 
-  return <Fridge houseInfo={houseInfo} />;
+  return <Fridge />;
 };
 
 export default HouseDashboard;

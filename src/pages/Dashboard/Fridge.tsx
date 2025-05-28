@@ -1,49 +1,41 @@
-import React, { useState, useEffect } from 'react';
-import { Container, Paper, Box } from '@mui/material';
+import { useState, useEffect } from 'react';
+import { Container, Paper, Box, Typography } from '@mui/material';
 import FridgeTopDoor from './FridgeTopDoor';
 import FridgeBigDoor from './FridgeBigDoor';
-import { fetchCleaningTasks, fetchBills, fetchReviews } from 'api/houseInfo';
+import { fetchHouseInfo, fetchCleaningTasks, fetchBills } from '../../api/houseInfo';
+import { Section, SectionData, HouseInfo } from 'types/types';
 
-interface FridgeProps {
-  houseInfo: any;
-}
-
-type Section = 'cleaning' | 'bills' | 'review' | null;
-
-  const Fridge: React.FC<FridgeProps> = ({ houseInfo }) => {
-    const [isBigDoorOpen, setIsBigDoorOpen] = useState(false);
-    const [activeSection, setActiveSection] = useState<Section>(null);
-    const [sectionData, setSectionData] = useState<any>(null);
-    const [loading, setLoading] = useState(false);
-
-  const toggleBigDoor = () => {
-    setIsBigDoorOpen(!isBigDoorOpen);
-    if (isBigDoorOpen) {
-      // closing door resets section
-      setActiveSection(null);
-      setSectionData(null);
-    }
-  };
-
-  const handleSectionClick = (section: Section) => {
-    setActiveSection(section);
-    setIsBigDoorOpen(true);
-  };
+const Fridge = () => {
+  const [isBigDoorOpen, setIsBigDoorOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState<Section>(null);
+  const [sectionData, setSectionData] = useState<SectionData>(null);
+  const [houseInfo, setHouseInfo] = useState<HouseInfo | null>(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (!activeSection) return;
+    const loadHouseInfo = async () => {
+      try {
+        const data = await fetchHouseInfo();
+        setHouseInfo(data);
+      } catch (error) {
+        console.error('Error fetching house info:', error);
+      }
+    };
+    loadHouseInfo();
+  }, []);
+
+  useEffect(() => {
+    if (!activeSection || !houseInfo) return;
 
     setLoading(true);
 
     const fetchData = async () => {
       try {
-        let data;
+        let data: SectionData = null;
         if (activeSection === 'cleaning') {
-          data = await fetchCleaningTasks(houseInfo.id);
+          data = await fetchCleaningTasks();
         } else if (activeSection === 'bills') {
-          data = await fetchBills(houseInfo.id);
-        } else if (activeSection === 'review') {
-          data = await fetchReviews(houseInfo.id);
+          data = await fetchBills();
         }
         setSectionData(data);
       } catch (error) {
@@ -55,7 +47,30 @@ type Section = 'cleaning' | 'bills' | 'review' | null;
     };
 
     fetchData();
-  }, [activeSection, houseInfo.id]);
+  }, [activeSection, houseInfo]);
+
+  const toggleBigDoor = () => {
+    setIsBigDoorOpen(!isBigDoorOpen);
+    if (isBigDoorOpen) {
+      setActiveSection(null);
+      setSectionData(null);
+    }
+  };
+
+  const handleSectionClick = (section: Section) => {
+    setActiveSection(section);
+    setIsBigDoorOpen(true);
+  };
+
+  if (!houseInfo) {
+    return (
+      <Container maxWidth="lg">
+        <Box display="flex" justifyContent="center" alignItems="center" minHeight="80vh">
+          <Typography>Loading house info...</Typography>
+        </Box>
+      </Container>
+    );
+  }
 
   return (
     <Container maxWidth="lg">
@@ -75,7 +90,7 @@ type Section = 'cleaning' | 'bills' | 'review' | null;
             transformStyle: 'preserve-3d',
           }}
         >
-          <FridgeTopDoor houseInfo={houseInfo} onSectionClick={handleSectionClick} />
+          <FridgeTopDoor onSectionClick={handleSectionClick} />
           <FridgeBigDoor
             isOpen={isBigDoorOpen}
             onToggle={toggleBigDoor}
