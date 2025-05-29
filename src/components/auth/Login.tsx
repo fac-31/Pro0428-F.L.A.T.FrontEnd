@@ -10,30 +10,30 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
+    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
- const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-  setLoading(true);
-  setErrorMsg(null);
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setErrorMsg(null);
 
-  try {
-    const { token, error } = await login(formData.email, formData.password);
+    try {
+      const { token, error } = await login(formData.email, formData.password);
 
-    if (error) {
-      setErrorMsg(error.message);
-    } else if (token) {
-      localStorage.setItem('token', token);
-      navigate('/house-dashboard');
+      if (error) {
+        setErrorMsg(error.message);
+      } else if (token) {
+        localStorage.setItem('token', token);
+        navigate('/house-dashboard');
+      }
+    } catch (err) {
+      console.error('Login error:', err);
+      setErrorMsg('Server error occurred. Please try again later.');
+    } finally {
+      setLoading(false);
     }
-  } catch (err) {
-  console.error('Login error:', err);
-  setErrorMsg('Server error occurred. Please try again later.');
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
   return (
     <Container maxWidth="xs">
@@ -69,7 +69,13 @@ const Login = () => {
                 {errorMsg}
               </Typography>
             )}
-            <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }} disabled={loading}>
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3, mb: 2 }}
+              disabled={loading}
+            >
               {loading ? 'Signing in...' : 'Sign In'}
             </Button>
             <Box sx={{ textAlign: 'center' }}>
