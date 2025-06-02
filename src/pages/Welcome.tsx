@@ -1,5 +1,15 @@
 import { useState, useEffect } from 'react';
-import { Container, Box, Typography, TextField, Button, Paper, List, ListItem, Divider } from '@mui/material';
+import {
+  Container,
+  Box,
+  Typography,
+  TextField,
+  Button,
+  Paper,
+  List,
+  ListItem,
+  Divider,
+} from '@mui/material';
 
 const API_URL = 'http://localhost:8001';
 
@@ -33,22 +43,22 @@ const Welcome = () => {
       try {
         const initialMessage: Message = { role: 'user', content: 'Hello' };
         setMessageHistory([initialMessage]);
-        
+
         const res = await fetch(`${API_URL}/api/welcome`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            messages: [initialMessage]
+            messages: [initialMessage],
           }),
         });
-        
+
         if (!res.ok) {
           throw new Error(`HTTP error! status: ${res.status}`);
         }
-        
+
         const data = await res.json();
         const aiMessage: Message = { role: 'assistant', content: data.response };
-        setMessageHistory(prev => [...prev, aiMessage]);
+        setMessageHistory((prev) => [...prev, aiMessage]);
         setMessages([{ sender: 'ai', text: data.response }]);
       } catch (error) {
         console.error('Error fetching welcome message:', error);
@@ -66,19 +76,19 @@ const Welcome = () => {
       'all preferences collected',
       'preferences have been recorded',
       'thank you for sharing your preferences',
-      'preferences have been saved'
+      'preferences have been saved',
     ];
-    return completionPhrases.some(phrase => response.toLowerCase().includes(phrase));
+    return completionPhrases.some((phrase) => response.toLowerCase().includes(phrase));
   };
 
   const sendMessage = async () => {
     if (!input.trim() || isConversationComplete) return;
-    
+
     const userMessage: Message = { role: 'user', content: input };
     const userChatMessage: ChatMessage = { sender: 'user', text: input };
-    
-    setMessages(prev => [...prev, userChatMessage]);
-    setMessageHistory(prev => [...prev, userMessage]);
+
+    setMessages((prev) => [...prev, userChatMessage]);
+    setMessageHistory((prev) => [...prev, userMessage]);
     setInput('');
     setLoading(true);
 
@@ -89,7 +99,7 @@ const Welcome = () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          messages: [...messageHistory, userMessage]
+          messages: [...messageHistory, userMessage],
         }),
       });
 
@@ -99,8 +109,8 @@ const Welcome = () => {
 
       const data = await res.json();
       const aiMessage: Message = { role: 'assistant', content: data.response };
-      setMessageHistory(prev => [...prev, aiMessage]);
-      setMessages(prev => [...prev, { sender: 'ai', text: data.response }]);
+      setMessageHistory((prev) => [...prev, aiMessage]);
+      setMessages((prev) => [...prev, { sender: 'ai', text: data.response }]);
 
       // Check if conversation is complete
       if (!isConversationComplete && checkConversationComplete(data.response)) {
@@ -108,12 +118,12 @@ const Welcome = () => {
         // Store the final preferences
         setHousePreferences({
           summary: data.response,
-          details: data.response // You might want to format this differently
+          details: data.response, // You might want to format this differently
         });
       }
     } catch (error) {
       console.error('Error sending message:', error);
-      setMessages(prev => [...prev, { sender: 'ai', text: 'Failed to get response from AI.' }]);
+      setMessages((prev) => [...prev, { sender: 'ai', text: 'Failed to get response from AI.' }]);
     } finally {
       setLoading(false);
     }
@@ -126,16 +136,21 @@ const Welcome = () => {
           <Typography component="h1" variant="h5" align="center" gutterBottom>
             Welcome!
           </Typography>
-          
+
           <List sx={{ minHeight: 120, maxHeight: 300, overflow: 'auto', mb: 2 }}>
             {messages.map((msg, idx) => (
-              <ListItem key={idx} sx={{ justifyContent: msg.sender === 'user' ? 'flex-end' : 'flex-start' }}>
-                <Box sx={{ 
-                  bgcolor: msg.sender === 'user' ? 'primary.light' : 'grey.200', 
-                  p: 1.5, 
-                  borderRadius: 2,
-                  maxWidth: '80%'
-                }}>
+              <ListItem
+                key={idx}
+                sx={{ justifyContent: msg.sender === 'user' ? 'flex-end' : 'flex-start' }}
+              >
+                <Box
+                  sx={{
+                    bgcolor: msg.sender === 'user' ? 'primary.light' : 'grey.200',
+                    p: 1.5,
+                    borderRadius: 2,
+                    maxWidth: '80%',
+                  }}
+                >
                   <Typography variant="body1">{msg.text}</Typography>
                 </Box>
               </ListItem>
@@ -160,7 +175,9 @@ const Welcome = () => {
             <TextField
               fullWidth
               variant="outlined"
-              placeholder={isConversationComplete ? "Conversation complete!" : "Type your message..."}
+              placeholder={
+                isConversationComplete ? 'Conversation complete!' : 'Type your message...'
+              }
               value={input}
               onChange={(e) => setInput(e.target.value)}
               disabled={loading || isConversationComplete}
@@ -171,9 +188,9 @@ const Welcome = () => {
                 }
               }}
             />
-            <Button 
-              variant="contained" 
-              onClick={sendMessage} 
+            <Button
+              variant="contained"
+              onClick={sendMessage}
               disabled={loading || !input.trim() || isConversationComplete}
             >
               Send
@@ -185,4 +202,4 @@ const Welcome = () => {
   );
 };
 
-export default Welcome; 
+export default Welcome;
