@@ -6,6 +6,7 @@ import Register from './components/auth/Register';
 import HouseSetup from './components/house/HouseSetup';
 import HouseDetails from './components/house/HouseDetails';
 import HouseDashboard from './pages/Dashboard/HouseDashboard';
+import Welcome from './pages/Welcome';
 
 const theme = createTheme({
   palette: {
@@ -29,6 +30,7 @@ function App() {
           <Route path="/house-setup" element={<HouseSetup />} />
           <Route path="/house-details" element={<HouseDetails />} />
           <Route path="/house-dashboard" element={<HouseDashboard />} />
+          <Route path="/welcome" element={<Welcome />} />
           <Route path="/" element={<Navigate to="/login" replace />} />
         </Routes>
       </Router>

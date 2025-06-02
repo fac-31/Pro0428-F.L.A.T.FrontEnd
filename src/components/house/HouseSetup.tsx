@@ -10,11 +10,11 @@ const HouseSetup = () => {
   const handleJoinHouse = (e: React.FormEvent) => {
     e.preventDefault();
     // TODO: Implement actual house joining logic - currently accepts anything
-    navigate('/dashboard');
+    navigate('/welcome');
   };
 
   const handleCreateHouse = () => {
-    navigate('/house-details');
+    navigate('/welcome');
   };
 
   return (
