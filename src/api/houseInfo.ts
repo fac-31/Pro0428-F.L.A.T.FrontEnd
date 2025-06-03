@@ -52,3 +52,4 @@ export const fetchHouseInfo = async (): Promise<HouseInfo> => {
 
   return json.data as HouseInfo;
 };
+
