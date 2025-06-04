@@ -3,12 +3,14 @@ import { Container, Paper, Box } from '@mui/material';
 import FridgeTopDoor from './FridgeTopDoor';
 import FridgeBigDoor from './FridgeBigDoor';
 import { fetchHouseInfo } from '../../api/houseInfo';
-import { HouseInfo } from '../../types/types';
+import { fetchTestDbInfo } from '../../api/testDB';
+import { HouseInfo, testDBUser } from '../../types/types';
 
 const Fridge = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [activeSection, setActiveSection] = useState<'cleaning' | 'bills' | 'review' | null>(null);
   const [houseInfo, setHouseInfo] = useState<HouseInfo | null>(null);
+  const [testDbData, setTestDbData] = useState<testDBUser[] | null>(null);
   const [loading, setLoading] = useState(false);
 
   const handleSectionClick = async (section: 'cleaning' | 'bills' | 'review') => {
@@ -17,11 +19,21 @@ const Fridge = () => {
     setLoading(true);
 
     try {
-      const data = await fetchHouseInfo();
-      setHouseInfo(data);
+      if (section === 'cleaning') {
+        console.log("Fetching test data...");
+        const data = await fetchTestDbInfo();
+        console.log("Test data received:", data);
+        setTestDbData(data);
+        setHouseInfo(null); 
+      } else {
+        const data = await fetchHouseInfo();
+        setHouseInfo(data);
+        setTestDbData(null); 
+      }
     } catch (error) {
-      console.error('Failed to fetch house info:', error);
+      console.error('Failed to fetch data:', error);
       setHouseInfo(null);
+      setTestDbData(null);
     } finally {
       setLoading(false);
     }
@@ -48,9 +60,10 @@ const Fridge = () => {
           <FridgeTopDoor onSectionClick={handleSectionClick} />
           <FridgeBigDoor
             isOpen={isOpen}
-            onToggle={() => setIsOpen(!isOpen)} // optional: remove if not needed
+            onToggle={() => setIsOpen(!isOpen)}
             activeSection={activeSection}
             data={houseInfo}
+            testDbData={testDbData}
             loading={loading}
           />
         </Paper>

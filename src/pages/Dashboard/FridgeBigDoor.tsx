@@ -1,12 +1,13 @@
 import React from 'react';
 import { Box, Typography, CircularProgress } from '@mui/material';
-import { HouseInfo } from '../../types/types';
+import { HouseInfo, testDBUser } from '../../types/types';
 
 interface FridgeBigDoorProps {
   isOpen: boolean;
   onToggle: () => void;
   activeSection: 'cleaning' | 'bills' | 'review' | null;
   data: HouseInfo | null;
+  testDbData?: testDBUser[] | null;
   loading: boolean;
 }
 
@@ -15,6 +16,7 @@ const FridgeBigDoor: React.FC<FridgeBigDoorProps> = ({
   onToggle,
   activeSection,
   data,
+  testDbData, // <- now used!
   loading,
 }) => {
   const renderContent = () => {
@@ -26,34 +28,54 @@ const FridgeBigDoor: React.FC<FridgeBigDoorProps> = ({
       );
     }
 
+    if (activeSection === 'cleaning') {
+      if (!testDbData || testDbData.length === 0) {
+        return (
+          <Typography variant="body1" color="text.secondary" align="center" mt={2}>
+            No cleaning (test DB) data found.
+          </Typography>
+        );
+      }
+
+      return (
+        <Box>
+          <Typography variant="h6" gutterBottom>
+            Cleaning Test Data
+          </Typography>
+          {testDbData.map((user) => (
+            <Box key={user.user_id} mb={2} p={1} border="1px solid #ccc" borderRadius={2}>
+              <Typography>Name: {user.name}</Typography>
+              <Typography>Email: {user.email}</Typography>
+              <Typography>Created At: {new Date(user.created_at).toLocaleString()}</Typography>
+              <Typography>House ID: {user.house_id}</Typography>
+            </Box>
+          ))}
+        </Box>
+      );
+    }
+
+    // If not cleaning section, fallback to house info
     if (!data) {
       return (
         <Typography variant="body1" color="text.secondary" align="center" mt={2}>
-          No data found.
+          No house info data found.
         </Typography>
       );
     }
 
     switch (activeSection) {
-      case 'cleaning':
-        return (
-          <Box>
-            <Typography variant="h6">Cleaning Tasks</Typography>
-            {/* Add more cleaning-related data */}
-          </Box>
-        );
       case 'bills':
         return (
           <Box>
             <Typography variant="h6">Bills Info</Typography>
-            {/* Add more billing info */}
+            {/* Render bills-related content */}
           </Box>
         );
       case 'review':
         return (
           <Box>
             <Typography variant="h6">House Review</Typography>
-            {/* Add more review info */}
+            {/* Render review-related content */}
           </Box>
         );
       default:
@@ -75,7 +97,7 @@ const FridgeBigDoor: React.FC<FridgeBigDoorProps> = ({
         overflow: 'visible',
       }}
     >
-      {/* Fridge interior (white) behind the door */}
+      {/* Fridge interior */}
       <Box
         sx={{
           position: 'absolute',
@@ -83,7 +105,7 @@ const FridgeBigDoor: React.FC<FridgeBigDoorProps> = ({
           left: 0,
           width: '100%',
           height: '100%',
-          backgroundColor: '#ffffff', // White interior
+          backgroundColor: '#ffffff',
           borderRadius: '0 0 40px 40px',
           padding: 3,
           overflowY: 'auto',
@@ -116,7 +138,6 @@ const FridgeBigDoor: React.FC<FridgeBigDoorProps> = ({
           zIndex: 10,
         }}
       >
-        {/* Handle */}
         <Box
           sx={{
             position: 'absolute',
