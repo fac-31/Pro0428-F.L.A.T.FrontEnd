@@ -20,15 +20,15 @@ const Fridge = () => {
 
     try {
       if (section === 'cleaning') {
-        console.log("Fetching test data...");
+        console.log('Fetching test data...');
         const data = await fetchTestDbInfo();
-        console.log("Test data received:", data);
+        console.log('Test data received:', data);
         setTestDbData(data);
-        setHouseInfo(null); 
+        setHouseInfo(null);
       } else {
         const data = await fetchHouseInfo();
         setHouseInfo(data);
-        setTestDbData(null); 
+        setTestDbData(null);
       }
     } catch (error) {
       console.error('Failed to fetch data:', error);

@@ -1,14 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link as RouterLink } from 'react-router-dom';
-import {
-  Container,
-  Box,
-  Typography,
-  TextField,
-  Button,
-  Link,
-  Paper,
-} from '@mui/material';
+import { Container, Box, Typography, TextField, Button, Link, Paper } from '@mui/material';
 import { login } from './auth.ts';
 
 const Login = () => {

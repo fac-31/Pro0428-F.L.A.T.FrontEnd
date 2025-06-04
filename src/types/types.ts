@@ -35,10 +35,10 @@ export type SectionData = CleaningTask[] | Bills[] | null;
 
 export interface testDBUser {
   user_id: string;
-  preferences: Record<string, unknown>; 
+  preferences: Record<string, unknown>;
   email: string;
   name: string;
-  created_at: string; 
+  created_at: string;
   house_id: string;
 }
 
