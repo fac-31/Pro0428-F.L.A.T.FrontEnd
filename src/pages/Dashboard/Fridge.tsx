@@ -1,76 +1,43 @@
-import { useState, useEffect } from 'react';
-import { Container, Paper, Box, Typography } from '@mui/material';
+import { useState } from 'react';
+import { Container, Paper, Box } from '@mui/material';
 import FridgeTopDoor from './FridgeTopDoor';
 import FridgeBigDoor from './FridgeBigDoor';
-import { fetchHouseInfo, fetchCleaningTasks, fetchBills } from '../../api/houseInfo';
-import { Section, SectionData, HouseInfo } from 'types/types';
+import { fetchHouseInfo } from '../../api/houseInfo';
+import { fetchTestDbInfo } from '../../api/testDB';
+import { HouseInfo, testDBUser } from '../../types/types';
 
 const Fridge = () => {
-  const [isBigDoorOpen, setIsBigDoorOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState<Section>(null);
-  const [sectionData, setSectionData] = useState<SectionData>(null);
+  const [isOpen, setIsOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState<'cleaning' | 'bills' | 'review' | null>(null);
   const [houseInfo, setHouseInfo] = useState<HouseInfo | null>(null);
+  const [testDbData, setTestDbData] = useState<testDBUser[] | null>(null);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    const loadHouseInfo = async () => {
-      try {
-        const data = await fetchHouseInfo();
-        setHouseInfo(data);
-      } catch (error) {
-        console.error('Error fetching house info:', error);
-      }
-    };
-    loadHouseInfo();
-  }, []);
-
-  useEffect(() => {
-    if (!activeSection || !houseInfo) return;
-
+  const handleSectionClick = async (section: 'cleaning' | 'bills' | 'review') => {
+    setActiveSection(section);
+    setIsOpen(true);
     setLoading(true);
 
-    const fetchData = async () => {
-      try {
-        let data: SectionData = null;
-        if (activeSection === 'cleaning') {
-          data = await fetchCleaningTasks();
-        } else if (activeSection === 'bills') {
-          data = await fetchBills();
-        }
-        setSectionData(data);
-      } catch (error) {
-        console.error('Error fetching section data:', error);
-        setSectionData(null);
-      } finally {
-        setLoading(false);
+    try {
+      if (section === 'cleaning') {
+        console.log('Fetching test data...');
+        const data = await fetchTestDbInfo();
+        console.log('Test data received:', data);
+        setTestDbData(data);
+        setHouseInfo(null);
+      } else {
+        const data = await fetchHouseInfo();
+        setHouseInfo(data);
+        setTestDbData(null);
       }
-    };
-
-    fetchData();
-  }, [activeSection, houseInfo]);
-
-  const toggleBigDoor = () => {
-    setIsBigDoorOpen(!isBigDoorOpen);
-    if (isBigDoorOpen) {
-      setActiveSection(null);
-      setSectionData(null);
+    } catch (error) {
+      console.error('Failed to fetch data:', error);
+      setHouseInfo(null);
+      setTestDbData(null);
+    } finally {
+      setLoading(false);
     }
   };
-
-  const handleSectionClick = (section: Section) => {
-    setActiveSection(section);
-    setIsBigDoorOpen(true);
-  };
-
-  if (!houseInfo) {
-    return (
-      <Container maxWidth="lg">
-        <Box display="flex" justifyContent="center" alignItems="center" minHeight="80vh">
-          <Typography>Loading house info...</Typography>
-        </Box>
-      </Container>
-    );
-  }
 
   return (
     <Container maxWidth="lg">
@@ -80,7 +47,7 @@ const Fridge = () => {
           sx={{
             width: 500,
             height: 800,
-            borderRadius: '80px 80px 0px 0px',
+            borderRadius: '80px 80px 0 0',
             position: 'relative',
             display: 'flex',
             flexDirection: 'column',
@@ -92,10 +59,11 @@ const Fridge = () => {
         >
           <FridgeTopDoor onSectionClick={handleSectionClick} />
           <FridgeBigDoor
-            isOpen={isBigDoorOpen}
-            onToggle={toggleBigDoor}
+            isOpen={isOpen}
+            onToggle={() => setIsOpen(!isOpen)}
             activeSection={activeSection}
-            data={sectionData}
+            data={houseInfo}
+            testDbData={testDbData}
             loading={loading}
           />
         </Paper>

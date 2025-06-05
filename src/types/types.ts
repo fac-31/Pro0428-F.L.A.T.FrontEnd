@@ -32,3 +32,18 @@ export interface FridgeProps {
 
 export type Section = 'cleaning' | 'bills' | null;
 export type SectionData = CleaningTask[] | Bills[] | null;
+
+export interface testDBUser {
+  user_id: string;
+  preferences: Record<string, unknown>;
+  email: string;
+  name: string;
+  created_at: string;
+  house_id: string;
+}
+
+export interface testDbResponse {
+  success: boolean;
+  data: testDBUser[];
+  message?: string;
+}

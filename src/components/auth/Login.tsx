@@ -25,6 +25,15 @@ const Login = () => {
         setErrorMsg(error.message);
       } else if (token) {
         localStorage.setItem('token', token);
+
+        try {
+          const payload = JSON.parse(atob(token.split('.')[1]));
+          localStorage.setItem('user_id', payload.sub);
+          localStorage.setItem('house_id', payload.house_id);
+        } catch (decodeErr) {
+          console.error('Failed to decode token:', decodeErr);
+        }
+
         navigate('/house-dashboard');
       }
     } catch (err) {
@@ -37,7 +46,14 @@ const Login = () => {
 
   return (
     <Container maxWidth="xs">
-      <Box sx={{ marginTop: 8, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+      <Box
+        sx={{
+          marginTop: 8,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+        }}
+      >
         <Paper elevation={3} sx={{ p: 4, width: '100%' }}>
           <Typography component="h1" variant="h5" align="center" gutterBottom>
             Welcome Back
