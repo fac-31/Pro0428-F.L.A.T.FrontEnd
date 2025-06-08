@@ -1,12 +1,15 @@
 import React from 'react';
-import { Container } from '@mui/material';
+import Calendar from './Calendar';
 import Fridge from './Fridge';
+import Poster from './Poster';
 
 const HouseDashboard = () => {
   return (
-    <Container maxWidth="lg">
+    <div className="kitchen">
+      <Poster />
       <Fridge />
-    </Container>
+      <Calendar />
+    </div>
   );
 };
 
