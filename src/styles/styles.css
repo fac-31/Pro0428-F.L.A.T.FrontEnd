@@ -37,7 +37,7 @@ body {
 
 .kitchen {
   width: 100%;
-  background-image: url('kitchen-wallpaper2.png');
+  background-image: url('/kitchen-wallpaper.png');
   background-size: 256px 256px;
   background-repeat: repeat;
   border: 5px inset var(--mediumbeige);
@@ -373,7 +373,7 @@ body {
 .image-container {
   width: 75%;
   padding-top: 72%;
-  background-image: url('./photos/june.png');
+  background-image: url('/photos/june.png');
   background-size: contain;
   border: 3px solid var(--cherry);
 }
