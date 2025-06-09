@@ -171,7 +171,7 @@ const Welcome = () => {
           const saveResult = await saveRes.json();
           if (saveResult.success) {
             console.log('Preferences saved successfully');
-            navigate('/house-dashboard');  
+            navigate('/house-dashboard');
           }
         } catch (error) {
           console.error('Error saving preferences:', error);

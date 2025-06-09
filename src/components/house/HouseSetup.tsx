@@ -39,7 +39,7 @@ const HouseSetup = () => {
   };
 
   const handleCreateHouse = () => {
-    navigate('/house-details'); 
+    navigate('/house-details');
   };
 
   return (

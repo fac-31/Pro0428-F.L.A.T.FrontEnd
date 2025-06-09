@@ -11,7 +11,7 @@ interface LandlordContact {
 }
 
 interface HousePreferences {
-  [key: string]: string | number | boolean | null | HousePreferences; 
+  [key: string]: string | number | boolean | null | HousePreferences;
 }
 
 const HouseDetails = () => {

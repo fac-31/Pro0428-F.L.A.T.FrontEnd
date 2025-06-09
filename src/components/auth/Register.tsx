@@ -73,7 +73,9 @@ const Register = () => {
       if (error instanceof AxiosError) {
         console.error('Registration error:', error);
         if (error.response?.status === 500) {
-          setErrorMsg(error.response.data.error || 'Server error occurred. Please try again later.');
+          setErrorMsg(
+            error.response.data.error || 'Server error occurred. Please try again later.'
+          );
         } else {
           setErrorMsg('Registration failed. Please try again.');
         }
