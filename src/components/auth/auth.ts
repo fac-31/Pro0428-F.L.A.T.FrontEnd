@@ -9,15 +9,15 @@ export const logout = async () => {
   try {
     // Call the logout endpoint
     await api.post('/logout');
-    
+
     // Clear local storage
     localStorage.removeItem('token');
     localStorage.removeItem('user_id');
     localStorage.removeItem('house_id');
-    
+
     // Clear any auth headers from axios
     delete api.defaults.headers.common['Authorization'];
-    
+
     return true;
   } catch (error) {
     console.error('Logout error:', error);

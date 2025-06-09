@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Container, Box, Typography, TextField, Button, Paper, Grid } from '@mui/material';
 import api from '../../api/axios';
+import { AxiosError } from 'axios';
 
 interface LandlordContact {
   name: string;
@@ -10,7 +11,7 @@ interface LandlordContact {
 }
 
 interface HousePreferences {
-  [key: string]: any;
+  [key: string]: string | number | boolean | null | HousePreferences; 
 }
 
 const HouseDetails = () => {
@@ -42,13 +43,17 @@ const HouseDetails = () => {
       } else {
         setErrorMsg('Failed to create house. Please try again.');
       }
-    } catch (error: any) {
-      console.error('House creation error:', error);
-      if (error.response?.status === 401) {
-        setErrorMsg('Please log in to create a house.');
-        navigate('/login');
+    } catch (error: unknown) {
+      if (error instanceof AxiosError) {
+        console.error('House creation error:', error);
+        if (error.response?.status === 401) {
+          setErrorMsg('Please log in to create a house.');
+          navigate('/login');
+        } else {
+          setErrorMsg(error.response?.data?.error || 'Failed to create house. Please try again.');
+        }
       } else {
-        setErrorMsg(error.response?.data?.error || 'Failed to create house. Please try again.');
+        setErrorMsg('An unexpected error occurred.');
       }
     } finally {
       setLoading(false);
@@ -57,21 +62,21 @@ const HouseDetails = () => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    
+
     // Handle nested landlord_contact fields
     if (name.startsWith('landlord_')) {
       const field = name.replace('landlord_', '');
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
         landlord_contact: {
           ...prev.landlord_contact,
-          [field]: value
-        }
+          [field]: value,
+        },
       }));
     } else {
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
-        [name]: value
+        [name]: value,
       }));
     }
   };
@@ -107,11 +112,11 @@ const HouseDetails = () => {
               onChange={handleChange}
               autoFocus
             />
-            
+
             <Typography variant="h6" sx={{ mt: 3, mb: 2 }}>
               Landlord Contact
             </Typography>
-            
+
             <TextField
               margin="normal"
               required
@@ -122,7 +127,7 @@ const HouseDetails = () => {
               value={formData.landlord_contact.name}
               onChange={handleChange}
             />
-            
+
             <TextField
               margin="normal"
               required
@@ -134,7 +139,7 @@ const HouseDetails = () => {
               value={formData.landlord_contact.email}
               onChange={handleChange}
             />
-            
+
             <TextField
               margin="normal"
               required
@@ -148,9 +153,9 @@ const HouseDetails = () => {
 
             <Grid container spacing={2} sx={{ mt: 2 }}>
               <Grid item xs={6}>
-                <Button 
-                  fullWidth 
-                  variant="outlined" 
+                <Button
+                  fullWidth
+                  variant="outlined"
                   onClick={() => navigate('/house-setup')}
                   disabled={loading}
                 >
@@ -158,12 +163,7 @@ const HouseDetails = () => {
                 </Button>
               </Grid>
               <Grid item xs={6}>
-                <Button 
-                  type="submit" 
-                  fullWidth 
-                  variant="contained"
-                  disabled={loading}
-                >
+                <Button type="submit" fullWidth variant="contained" disabled={loading}>
                   {loading ? 'Creating...' : 'Create House'}
                 </Button>
               </Grid>

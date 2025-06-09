@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Container, Box, Typography, Button, TextField, Paper, Grid } from '@mui/material';
+import { AxiosError } from 'axios';
 import api from '../../api/axios';
 
 const HouseSetup = () => {
@@ -16,9 +17,8 @@ const HouseSetup = () => {
     setErrorMsg(null);
 
     try {
-      // TODO: Implement actual house joining logic
-      const response = await api.post('/api/houses/join', { house_code: houseCode });
-      
+      const response = await api.post('/houses/join', { house_code: houseCode });
+
       if (response.status === 200 || response.status === 201) {
         const houseId = response.data.house_id;
         localStorage.setItem('house_id', houseId);
@@ -26,16 +26,20 @@ const HouseSetup = () => {
       } else {
         setErrorMsg('Invalid house code. Please try again.');
       }
-    } catch (error: any) {
-      console.error('Join house error:', error);
-      setErrorMsg(error.response?.data?.error || 'Failed to join house. Please try again.');
+    } catch (error: unknown) {
+      if (error instanceof AxiosError) {
+        console.error('Join house error:', error);
+        setErrorMsg(error.response?.data?.error || 'Failed to join house. Please try again.');
+      } else {
+        setErrorMsg('An unexpected error occurred.');
+      }
     } finally {
       setLoading(false);
     }
   };
 
   const handleCreateHouse = () => {
-    navigate('/house-details');  // Changed from '/welcome' to '/house-details'
+    navigate('/house-details'); 
   };
 
   return (
@@ -72,12 +76,7 @@ const HouseSetup = () => {
                 </Button>
               </Grid>
               <Grid item xs={12}>
-                <Button 
-                  fullWidth 
-                  variant="outlined" 
-                  onClick={handleCreateHouse}
-                  disabled={loading}
-                >
+                <Button fullWidth variant="outlined" onClick={handleCreateHouse} disabled={loading}>
                   Create New House
                 </Button>
               </Grid>
@@ -98,9 +97,9 @@ const HouseSetup = () => {
               />
               <Grid container spacing={2} sx={{ mt: 1 }}>
                 <Grid item xs={6}>
-                  <Button 
-                    fullWidth 
-                    variant="outlined" 
+                  <Button
+                    fullWidth
+                    variant="outlined"
                     onClick={() => setShowJoinInput(false)}
                     disabled={loading}
                   >
@@ -108,12 +107,7 @@ const HouseSetup = () => {
                   </Button>
                 </Grid>
                 <Grid item xs={6}>
-                  <Button 
-                    type="submit" 
-                    fullWidth 
-                    variant="contained"
-                    disabled={loading}
-                  >
+                  <Button type="submit" fullWidth variant="contained" disabled={loading}>
                     {loading ? 'Joining...' : 'Join House'}
                   </Button>
                 </Grid>

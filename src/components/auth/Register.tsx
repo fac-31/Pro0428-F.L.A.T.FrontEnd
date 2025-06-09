@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link as RouterLink } from 'react-router-dom';
 import { Container, Box, Typography, TextField, Button, Link, Paper } from '@mui/material';
+import { AxiosError } from 'axios';
 import api from '../../api/axios';
 
 const Register = () => {
@@ -68,12 +69,16 @@ const Register = () => {
         console.log('Registration response:', response.data);
         setErrorMsg('Registration failed. Please try again.');
       }
-    } catch (error: any) {
-      console.error('Registration error:', error);
-      if (error.response?.status === 500) {
-        setErrorMsg(error.response.data.error || 'Server error occurred. Please try again later.');
+    } catch (error: unknown) {
+      if (error instanceof AxiosError) {
+        console.error('Registration error:', error);
+        if (error.response?.status === 500) {
+          setErrorMsg(error.response.data.error || 'Server error occurred. Please try again later.');
+        } else {
+          setErrorMsg('Registration failed. Please try again.');
+        }
       } else {
-        setErrorMsg('Registration failed. Please try again.');
+        setErrorMsg('An unexpected error occurred.');
       }
     } finally {
       setLoading(false);
@@ -153,10 +158,10 @@ const Register = () => {
               value={formData.confirmPassword}
               onChange={handleChange}
             />
-            <Button 
-              type="submit" 
-              fullWidth 
-              variant="contained" 
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
               sx={{ mt: 3, mb: 2 }}
               disabled={loading}
             >

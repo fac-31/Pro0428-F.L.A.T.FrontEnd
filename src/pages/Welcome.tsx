@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Container,
   Box,
@@ -42,12 +43,16 @@ interface WelcomeResponse {
 }
 
 const Welcome = () => {
+  const navigate = useNavigate();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [messageHistory, setMessageHistory] = useState<Message[]>([]);
   const [isConversationComplete, setIsConversationComplete] = useState(false);
   const [housePreferences, setHousePreferences] = useState<HousePreferences | null>(null);
+
+  // Get auth token from localStorage
+  const authToken = localStorage.getItem('token');
 
   useEffect(() => {
     // Fetch initial welcome message from the AI agent
@@ -144,6 +149,9 @@ const Welcome = () => {
 
         // Save the final preferences
         try {
+          if (!authToken) {
+            throw new Error('No authentication token found');
+          }
           const saveRes = await fetch(`${API_URL}/api/save-preferences`, {
             method: 'POST',
             headers: {
@@ -163,9 +171,11 @@ const Welcome = () => {
           const saveResult = await saveRes.json();
           if (saveResult.success) {
             console.log('Preferences saved successfully');
+            navigate('/house-dashboard');  
           }
         } catch (error) {
           console.error('Error saving preferences:', error);
+          navigate('/welcome');
         }
       }
     } catch (error) {

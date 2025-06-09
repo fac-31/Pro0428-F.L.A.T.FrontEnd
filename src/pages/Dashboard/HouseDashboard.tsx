@@ -18,13 +18,13 @@ const HouseDashboard = () => {
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             F.L.A.T Dashboard
           </Typography>
-          <Button 
-            color="inherit" 
+          <Button
+            color="inherit"
             onClick={handleLogout}
-            sx={{ 
+            sx={{
               '&:hover': {
-                backgroundColor: 'rgba(255, 255, 255, 0.1)'
-              }
+                backgroundColor: 'rgba(255, 255, 255, 0.1)',
+              },
             }}
           >
             Logout
