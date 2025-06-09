@@ -23,9 +23,22 @@ interface ChatMessage {
   text: string;
 }
 
+interface UserPreferences {
+  preferences: string[];
+  requirements: string[];
+}
+
 interface HousePreferences {
   summary: string;
   details: string;
+  features: string[];
+}
+
+interface WelcomeResponse {
+  response: string;
+  isComplete: boolean;
+  userPreferences?: UserPreferences;
+  housePreferences?: HousePreferences;
 }
 
 const Welcome = () => {
@@ -70,6 +83,7 @@ const Welcome = () => {
     fetchWelcome();
   }, []);
 
+  /* replaced by new completion check: data.isComplete
   const checkConversationComplete = (response: string): boolean => {
     const completionPhrases = [
       'summary of your preferences',
@@ -79,7 +93,7 @@ const Welcome = () => {
       'preferences have been saved',
     ];
     return completionPhrases.some((phrase) => response.toLowerCase().includes(phrase));
-  };
+  };*/
 
   const sendMessage = async () => {
     if (!input.trim() || isConversationComplete) return;
@@ -107,19 +121,52 @@ const Welcome = () => {
         throw new Error(`HTTP error! status: ${res.status}`);
       }
 
-      const data = await res.json();
+      const data: WelcomeResponse = await res.json();
       const aiMessage: Message = { role: 'assistant', content: data.response };
       setMessageHistory((prev) => [...prev, aiMessage]);
       setMessages((prev) => [...prev, { sender: 'ai', text: data.response }]);
 
-      // Check if conversation is complete
-      if (!isConversationComplete && checkConversationComplete(data.response)) {
+      // Check if conversation is complete based on backend response
+      if (
+        !isConversationComplete &&
+        data.isComplete &&
+        data.userPreferences &&
+        data.housePreferences
+      ) {
         setIsConversationComplete(true);
-        // Store the final preferences
+
+        // Store the preferences
         setHousePreferences({
           summary: data.response,
-          details: data.response, // You might want to format this differently
+          details: data.response,
+          features: data.housePreferences.features,
         });
+
+        // Save the final preferences
+        try {
+          const saveRes = await fetch(`${API_URL}/api/save-preferences`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${authToken}`,
+            },
+            body: JSON.stringify({
+              user_preferences: data.userPreferences,
+              house_preferences: data.housePreferences,
+            }),
+          });
+
+          if (!saveRes.ok) {
+            throw new Error(`Failed to save preferences: ${saveRes.status}`);
+          }
+
+          const saveResult = await saveRes.json();
+          if (saveResult.success) {
+            console.log('Preferences saved successfully');
+          }
+        } catch (error) {
+          console.error('Error saving preferences:', error);
+        }
       }
     } catch (error) {
       console.error('Error sending message:', error);
