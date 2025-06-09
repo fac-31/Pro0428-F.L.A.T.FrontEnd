@@ -5,6 +5,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import './index.css';
 import App from './App.tsx';
 import theme from './theme';
+import './styles/styles.css';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

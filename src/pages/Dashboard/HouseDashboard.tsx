@@ -1,7 +1,9 @@
 import { useNavigate } from 'react-router-dom';
-import { Container, Button, AppBar, Toolbar, Typography } from '@mui/material';
-import { logout } from '../../components/auth/auth';
+import React from 'react';
+import Calendar from './Calendar';
 import Fridge from './Fridge';
+import Poster from './Poster';
+import { logout } from '../../components/auth/auth';
 
 const HouseDashboard = () => {
   const navigate = useNavigate();
@@ -12,6 +14,11 @@ const HouseDashboard = () => {
   };
 
   return (
+    <div className="kitchen">
+      <Poster />
+      <Fridge />
+      <Calendar />
+    </div>
     <>
       <AppBar position="static" color="primary">
         <Toolbar>
