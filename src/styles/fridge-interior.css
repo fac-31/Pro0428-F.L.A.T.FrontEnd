@@ -1,109 +1,26 @@
-:root {
-  --lightgrey: rgb(195, 191, 183);
-  --mediumgrey: rgb(148, 146, 140);
-  --darkgrey: rgb(101, 99, 96);
-  --lightmint: #d5ffe0;
-  --mediummint: #96c1a1;
-  --darkmint: #516958;
-  --lightrose: #f7aeae;
-  --mediumrose: #b57474;
-  --darkrose: #8f5d5d;
-  --lightbeige: #f7f2d7;
-  --mediumbeige: #dcd7ba;
-  --darkbeige: #a4a08b;
-  --cherry: #940522;
-  --lightcherry: #d63f5d;
-  --darkbrown: rgb(90, 56, 38);
-}
-
-* {
-  box-sizing: border-box;
-}
-
-body {
-  font-family: 'Courier New', Courier, monospace;
-  display: flex;
-  flex-direction: row;
-}
-
-.fridge-container {
-  width: 320px;
-  min-width: 320px;
-  height: 640px;
-  display: flex;
-  flex-flow: column nowrap;
-  justify-content: flex-start;
-  align-items: center;
-  border: 1px solid black;
-  box-shadow: 0 0 10px 8px var(--lightmint);
-}
-
-.fridge-top,
 .fridge-bottom {
   width: 100%;
+  min-height: 65%;
   position: relative;
-}
-
-.fridge-top {
-  height: 35%;
-  background-color: aquamarine;
-}
-
-.fridge-bottom {
-  height: 65%;
   background-image: linear-gradient(to left, gray, white 1.5%, white 98.5%, gray);
   display: flex;
   justify-content: center;
   align-items: center;
-}
-
-#fridge-interior-background {
-  width: 87%;
-  display: block;
-  margin: auto;
-  filter: grayscale(55%);
-  opacity: 20%;
+  padding: 0;
 }
 
 .fridge-interior {
+  background-image: url('fridge.png');
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
   width: 85%;
   height: 90%;
   display: flex;
   flex-flow: column nowrap;
   justify-content: flex-start;
   align-items: flex-start;
-  position: absolute;
-  left: 50%;
-  top: 0;
-  transform: translateX(-50%);
-}
-
-.due-date-container {
-  margin-left: auto;
-  margin-top: 5%;
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0;
-}
-
-#due {
-  font-weight: bold;
-  font-size: 18px;
-  color: var(--darkbrown);
-  margin: 0;
-}
-
-.due-date-display {
-  background-color: var(--lightbeige);
-  border-radius: 4px;
-  font-size: 14px;
-  font-weight: bold;
-  color: var(--darkbrown);
-  padding: 2px;
-  border: 2px inset var(--mediumbeige);
-  margin-left: 5px;
+  margin: auto;
 }
 
 .section-title {
@@ -111,7 +28,8 @@ body {
   font-weight: bold;
   color: var(--darkbrown);
   text-decoration: overline underline;
-  margin: 15px auto 10px;
+  margin-bottom: 10px;
+  margin-top: 0;
 }
 
 .table-container {
@@ -134,7 +52,7 @@ th,
 td {
   border: 1px solid var(--darkbeige);
   text-align: left;
-  padding: 6px;
+  padding: 3px;
 }
 
 tr:first-child td,
@@ -160,7 +78,7 @@ tr:last-child th {
 th {
   background-color: var(--darkbeige);
   color: var(--lightbeige);
-  font-size: 18px;
+  font-size: 12px;
 }
 
 th:first-child {
@@ -172,6 +90,7 @@ th:last-child {
 }
 
 td {
+  font-size: 11px;
   font-weight: bold;
   color: var(--darkbrown);
 }
@@ -184,6 +103,10 @@ tr:last-child > td:last-child {
   border-radius: 0 0 2px 0;
 }
 
+#task-complete-form {
+  text-align: center;
+}
+
 .add-task-form {
   width: 100%;
   background-color: var(--lightbeige);
@@ -193,9 +116,11 @@ tr:last-child > td:last-child {
   display: flex;
   flex-direction: column;
   padding: 5px;
+  margin-bottom: 50px;
 }
 
-input[type='text'] {
+input[type='text'],
+input[type='date'] {
   background-color: var(--lightbeige);
   border: 2px inset var(--mediumbeige);
   margin-bottom: 10px;

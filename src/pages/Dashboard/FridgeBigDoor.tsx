@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState, ChangeEvent, FormEvent } from 'react';
 import { CircularProgress } from '@mui/material';
-import { HouseInfo, testDBUser } from '../../types/types';
+import { HouseInfo, Bills, CleaningTask } from '../../types/types';
 import '../../styles/fridge-interior.css';
 
 interface FridgeBottomProps {
@@ -8,8 +8,21 @@ interface FridgeBottomProps {
   onToggle: () => void;
   activeSection: 'cleaning' | 'bills' | 'review' | null;
   data: HouseInfo | null;
-  testDbData?: testDBUser[] | null;
+  cleaningData?: CleaningTask[] | null;
+  billsData?: Bills[] | null;
   loading: boolean;
+}
+
+interface taskFormData {
+  type: string;
+  assigned_to_user: string;
+  due_date: string;
+}
+
+interface billFormData {
+  type: string;
+  amount: string;
+  due_date: string;
 }
 
 const FridgeBottom: React.FC<FridgeBottomProps> = ({
@@ -17,34 +30,48 @@ const FridgeBottom: React.FC<FridgeBottomProps> = ({
   onToggle,
   activeSection,
   data,
-  testDbData, // <- now used!
+  cleaningData,
+  billsData,
   loading,
 }) => {
+  const [taskFormData, setTaskFormData] = useState<taskFormData>({
+    type: '',
+    assigned_to_user: '',
+    due_date: '',
+  });
+
+  const [billFormData, setBillFormData] = useState<billFormData>({
+    type: '',
+    amount: '',
+    due_date: '',
+  });
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+
+    if (activeSection === 'cleaning') {
+      setTaskFormData((prev) => ({ ...prev, [name]: value }));
+    } else if (activeSection === 'bills') {
+      setBillFormData((prev) => ({ ...prev, [name]: value }));
+    }
+  };
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+  };
+
   const renderContent = () => {
     if (loading) {
       return <CircularProgress />;
     }
 
-    if (!testDbData || testDbData.length === 0) {
-      return <h1>No test DB data found.</h1>;
-    }
-
-    if (!data) {
-      return <h1>No house info data found.</h1>;
-    }
-
     switch (activeSection) {
       case 'cleaning':
+        if (!cleaningData || cleaningData.length === 0) {
+          return <h1>No cleaning data found.</h1>;
+        }
         return (
           <>
-            <div className="due-date-container">
-              <p id="due">DUE:</p>
-              <div className="due-date-display">SUNDAY</div>
-              <div className="due-date-display">0</div>
-              <div className="due-date-display">8</div>
-              <div className="due-date-display">JUNE</div>
-            </div>
-
             <h1 className="section-title">Active Cleaning Tasks:</h1>
 
             <div className="table-container">
@@ -53,45 +80,67 @@ const FridgeBottom: React.FC<FridgeBottomProps> = ({
                   <tr>
                     <th>TASK</th>
                     <th>ASSIGNEE</th>
+                    <th>DUE DATE</th>
+                    <th>STATUS</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td>Clean kitchen</td>
-                    <td>{testDbData[0].name}</td>
-                  </tr>
-                  <tr>
-                    <td>Clean bathroom</td>
-                    <td>{testDbData[0].name}</td>
-                  </tr>
+                  {cleaningData.map((task, index) => (
+                    <tr key={task.cleaning_task_id || index}>
+                      <td>{task.description}</td>
+                      <td>{task.assigned_to_user}</td>
+                      <td>{new Date(task.due_date).toLocaleDateString()}</td>
+                      <td className="task-complete-column">{task.task_complete ? '✓' : '✕'}</td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
             </div>
 
-            <form className="add-task-form">
+            <form className="add-task-form" onSubmit={handleSubmit}>
               <label id="task-name-label" htmlFor="task-name">
                 TASK
               </label>
-              <input id="task-name" type="text" />
+              <input
+                id="task-name"
+                type="text"
+                name="type"
+                value={taskFormData.type}
+                onChange={handleChange}
+                required
+              />
               <label id="assignee-name-label" htmlFor="assignee-name">
                 ASSIGNEE
               </label>
-              <input id="assignee-name" type="text" />
+              <input
+                id="assignee-name"
+                type="text"
+                name="assigned_to_user"
+                value={taskFormData.assigned_to_user}
+                onChange={handleChange}
+                required
+              />
+              <label id="task-due-date-label" htmlFor="task-due-date">
+                DUE DATE
+              </label>
+              <input
+                id="task-due-date"
+                type="date"
+                name="due_date"
+                value={taskFormData.due_date}
+                onChange={handleChange}
+                required
+              />
               <input id="add-task-button" type="submit" value="ADD" />
             </form>
           </>
         );
       case 'bills':
+        if (!billsData || billsData.length === 0) {
+          return <h1>No bills available.</h1>;
+        }
         return (
           <>
-            <div className="due-date-container">
-              <p id="due">DUE:</p>
-              <div className="due-date-display">SUNDAY</div>
-              <div className="due-date-display">0</div>
-              <div className="due-date-display">8</div>
-              <div className="due-date-display">JUNE</div>
-            </div>
-
             <h1 className="section-title">Active Bills:</h1>
 
             <div className="table-container">
@@ -99,36 +148,68 @@ const FridgeBottom: React.FC<FridgeBottomProps> = ({
                 <thead>
                   <tr>
                     <th>BILL</th>
-                    <th>ASSIGNEE</th>
+                    <th>AMOUNT (£)</th>
+                    <th>DUE DATE</th>
+                    <th>STATUS</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td>Gas</td>
-                    <td>{testDbData[0].name}</td>
-                  </tr>
-                  <tr>
-                    <td>Water</td>
-                    <td>{testDbData[0].name}</td>
-                  </tr>
+                  {billsData.map((bill) => (
+                    <tr key={bill.bill_id}>
+                      <td>{bill.bill_type}</td>
+                      <td>{bill.bill_amount}</td>
+                      <td>
+                        {bill.due_date ? new Date(bill.due_date).toLocaleDateString() : 'N/A'}
+                      </td>
+                      <td className="task-complete-column">{bill.paid ? '✓' : '✕'}</td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
             </div>
 
-            <form className="add-task-form">
-              <label id="task-name-label" htmlFor="task-name">
-                TASK
+            <form className="add-task-form" onSubmit={handleSubmit}>
+              <label id="bill-type-label" htmlFor="task-type">
+                BILL
               </label>
-              <input id="task-name" type="text" />
-              <label id="assignee-name-label" htmlFor="assignee-name">
-                ASSIGNEE
+              <input
+                id="bill-type"
+                type="text"
+                name="type"
+                value={billFormData.type}
+                onChange={handleChange}
+                required
+              />
+              <label id="bill-amount-label" htmlFor="bill-amount">
+                AMOUNT (£)
               </label>
-              <input id="assignee-name" type="text" />
+              <input
+                id="bill-amount"
+                type="text"
+                name="amount"
+                value={billFormData.amount}
+                onChange={handleChange}
+                required
+              />
+              <label id="bill-due-date-label" htmlFor="bill-due-date">
+                DUE DATE
+              </label>
+              <input
+                id="bill-due-date"
+                type="date"
+                name="due_date"
+                value={billFormData.due_date}
+                onChange={handleChange}
+                required
+              />
               <input id="add-task-button" type="submit" value="ADD" />
             </form>
           </>
         );
       case 'review':
+        if (!data) {
+          return <h1>No house info data found.</h1>;
+        }
         return (
           <>
             <h1 id="review-title" className="section-title">
@@ -163,13 +244,12 @@ const FridgeBottom: React.FC<FridgeBottomProps> = ({
           </>
         );
       default:
-        return null;
+        return <h1>Select a section to view data.</h1>;
     }
   };
 
   return (
     <div className="fridge-bottom">
-      <img id="fridge-interior-background" src="fridge.png" alt="Fridge Interior" />
       <div className="fridge-interior" style={{ opacity: isOpen ? 1 : 0, zIndex: 0 }}>
         {renderContent()}
       </div>

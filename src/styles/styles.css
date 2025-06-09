@@ -45,10 +45,6 @@ html {
   flex-flow: row wrap;
   justify-content: space-around;
   padding: 30px;
-  /* position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%); */
 }
 
 .poster {
@@ -131,8 +127,8 @@ html {
 }
 
 .fridge-container {
-  width: 320px;
-  height: 640px;
+  width: 400px;
+  min-height: 800px;
   display: flex;
   flex-flow: column nowrap;
   justify-content: flex-start;
@@ -159,7 +155,7 @@ html {
 }
 
 .fridge-top {
-  height: 35%;
+  height: 280px;
   position: relative;
 }
 
@@ -246,7 +242,7 @@ html {
 .fridge-bottom,
 .fridge-door {
   width: 100%;
-  height: 65%;
+  /* height: 65%; */
   position: relative;
 }
 
@@ -341,7 +337,7 @@ html {
 
 .calendar-pin {
   left: 50%;
-  top: -11%;
+  top: -9%;
   transform: translateX(-50%);
 }
 
