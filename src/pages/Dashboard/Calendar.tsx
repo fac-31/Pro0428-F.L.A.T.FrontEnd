@@ -1,17 +1,18 @@
-const Calendar = () => {
-  const daysOfTheWeek: string[] = [
-    'SUNDAY',
-    'MONDAY',
-    'TUESDAY',
-    'WEDNESDAY',
-    'THURSDAY',
-    'FRIDAY',
-    'SATURDAY',
-  ];
+import React, { useEffect, useState } from 'react';
+import { fetchSingleUserTask } from '../../api/houseInfo.ts';
+import { updateTaskStatus } from '../../api/houseInfo.ts';
+import CalendarCleaningTaskList from './CalendarCleaningTaskList.tsx';
+import { usersCleaningTask } from '../../types/types.ts';
 
-  const monthsOfTheYear: string[] = [
+const Calendar = () => {
+  const [tasks, setTasks] = useState<usersCleaningTask[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const today = new Date();
+  const days = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'];
+  const months = [
     'JANUARY',
-    'FEBRUAY',
+    'FEBRUARY',
     'MARCH',
     'APRIL',
     'MAY',
@@ -24,66 +25,55 @@ const Calendar = () => {
     'DECEMBER',
   ];
 
-  const today = new Date();
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const data = await fetchSingleUserTask();
+        setTasks(data);
+      } catch (e) {
+        console.error('Error:', e);
+      } finally {
+        setLoading(false);
+      }
+    };
+    load();
+  }, []);
+
+  const handleToggle = async (taskId: string, currentStatus: boolean) => {
+    try {
+      await updateTaskStatus(taskId, !currentStatus);
+      setTasks((prev) =>
+        prev.map((task) =>
+          task.cleaning_task_id === taskId ? { ...task, task_complete: !currentStatus } : task
+        )
+      );
+    } catch (e) {
+      console.error('Failed to update status:', e);
+    }
+  };
 
   return (
     <div className="calendar-container">
-      <div className="string-left"></div>
-      <div className="string-right"></div>
-      <div className="pin calendar-pin"></div>
+      <div className="string-left" />
+      <div className="string-right" />
+      <div className="pin calendar-pin" />
       <div className="calendar">
         <div className="date-container">
-          <div className="date-display">{daysOfTheWeek[today.getDay()]}</div>
-          <div className="date-display">
-            {today.getDate() < 10 ? 0 : today.getDate() < 20 ? 1 : today.getDate() < 30 ? 2 : 3}
-          </div>
-          <div className="date-display">{today.getDate() % 10}</div>
-          <div className="date-display">{monthsOfTheYear[today.getMonth()]}</div>
+          <div className="date-display">{days[today.getDay()]}</div>
+          <div className="date-display">{today.getDate()}</div>
+          <div className="date-display">{months[today.getMonth()]}</div>
         </div>
+
         <div
           className="image-container"
           style={{
-            backgroundImage: `url(/calendar_photos/${monthsOfTheYear[today.getMonth()].toLowerCase()}.png)`,
+            backgroundImage: `url(/calendar_photos/${months[today.getMonth()].toLowerCase()}.png)`,
           }}
         ></div>
+
         <div className="information">
           <h1 className="heading">My Cleaning Tasks:</h1>
-          <div className="task-container">
-            <div className="task">
-              <label className="task-name" htmlFor="task1">
-                TASK 1
-              </label>
-              <input type="checkbox" id="task1" name="task1" value="Task 1" />
-            </div>
-            <div className="task">
-              <label className="task-name" htmlFor="task2">
-                TASK 2
-              </label>
-              <input type="checkbox" id="task2" name="task2" value="Task 2" />
-            </div>
-          </div>
-
-          <h1 className="heading">My Bills:</h1>
-          <div className="task-container">
-            <div className="task">
-              <label className="task-name" htmlFor="bill1">
-                BILL 1
-              </label>
-              <input type="checkbox" id="bill1" name="bill1" value="Bill 1" />
-            </div>
-            <div className="task">
-              <label className="task-name" htmlFor="bill2">
-                BILL 2
-              </label>
-              <input type="checkbox" id="bill2" name="bill2" value="Bill 2" />
-            </div>
-            <div className="task">
-              <label className="task-name" htmlFor="bill3">
-                BILL 3
-              </label>
-              <input type="checkbox" id="bill3" name="bill3" value="Bill 3" />
-            </div>
-          </div>
+          <CalendarCleaningTaskList tasks={tasks} loading={loading} onToggle={handleToggle} />
 
           <h1 className="heading">Review Submission:</h1>
           <form className="review-form">
