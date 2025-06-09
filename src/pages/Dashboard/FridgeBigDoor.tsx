@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Typography, CircularProgress } from '@mui/material';
-import { HouseInfo, testDBUser } from '../../types/types';
+import { HouseInfo, testDBUser, Bills } from '../../types/types';
 
 interface FridgeBigDoorProps {
   isOpen: boolean;
@@ -8,6 +8,7 @@ interface FridgeBigDoorProps {
   activeSection: 'cleaning' | 'bills' | 'review' | null;
   data: HouseInfo | null;
   testDbData?: testDBUser[] | null;
+  billsData?: Bills[] | null;
   loading: boolean;
 }
 
@@ -16,7 +17,8 @@ const FridgeBigDoor: React.FC<FridgeBigDoorProps> = ({
   onToggle,
   activeSection,
   data,
-  testDbData, // <- now used!
+  testDbData,
+  billsData,
   loading,
 }) => {
   const renderContent = () => {
@@ -28,58 +30,91 @@ const FridgeBigDoor: React.FC<FridgeBigDoorProps> = ({
       );
     }
 
-    if (activeSection === 'cleaning') {
-      if (!testDbData || testDbData.length === 0) {
-        return (
-          <Typography variant="body1" color="text.secondary" align="center" mt={2}>
-            No cleaning (test DB) data found.
-          </Typography>
-        );
-      }
-
-      return (
-        <Box>
-          <Typography variant="h6" gutterBottom>
-            Cleaning Test Data
-          </Typography>
-          {testDbData.map((user) => (
-            <Box key={user.user_id} mb={2} p={1} border="1px solid #ccc" borderRadius={2}>
-              <Typography>Name: {user.name}</Typography>
-              <Typography>Email: {user.email}</Typography>
-              <Typography>Created At: {new Date(user.created_at).toLocaleString()}</Typography>
-              <Typography>House ID: {user.house_id}</Typography>
-            </Box>
-          ))}
-        </Box>
-      );
-    }
-
-    // If not cleaning section, fallback to house info
-    if (!data) {
-      return (
-        <Typography variant="body1" color="text.secondary" align="center" mt={2}>
-          No house info data found.
-        </Typography>
-      );
-    }
-
     switch (activeSection) {
-      case 'bills':
+      case 'cleaning':
+        if (!testDbData || testDbData.length === 0) {
+          return (
+            <Typography variant="body1" color="text.secondary" align="center" mt={2}>
+              No cleaning (test DB) data found.
+            </Typography>
+          );
+        }
         return (
           <Box>
-            <Typography variant="h6">Bills Info</Typography>
-            {/* Render bills-related content */}
+            <Typography variant="h6" gutterBottom>
+              Cleaning Test Data
+            </Typography>
+            {testDbData.map((user) => (
+              <Box key={user.user_id} mb={2} p={1} border="1px solid #ccc" borderRadius={2}>
+                <Typography>Name: {user.name}</Typography>
+                <Typography>Email: {user.email}</Typography>
+                <Typography>Created At: {new Date(user.created_at).toLocaleString()}</Typography>
+                <Typography>House ID: {user.house_id}</Typography>
+              </Box>
+            ))}
           </Box>
         );
+
+      case 'bills':
+        if (!billsData || billsData.length === 0) {
+          return (
+            <Typography variant="body2" color="text.secondary" align="center" mt={2}>
+              No bills available.
+            </Typography>
+          );
+        }
+        return (
+          <Box>
+            <Typography variant="h6" gutterBottom>
+              Bills Info
+            </Typography>
+            {billsData.map((bill) => (
+              <Box
+                key={bill.bill_id}
+                sx={{
+                  mb: 2,
+                  p: 2,
+                  border: '1px solid #ccc',
+                  borderRadius: 2,
+                  backgroundColor: bill.paid ? '#e0f7e9' : '#fff4f4',
+                }}
+              >
+                <Typography variant="subtitle1">{bill.bill_type}</Typography>
+                <Typography variant="body2">Amount: £{bill.bill_amount}</Typography>
+                {bill.due_date && (
+                  <Typography variant="body2">
+                    Due: {new Date(bill.due_date).toLocaleDateString()}
+                  </Typography>
+                )}
+                <Typography variant="body2" color={bill.paid ? 'green' : 'error'}>
+                  {bill.paid ? 'Paid' : 'Unpaid'}
+                </Typography>
+              </Box>
+            ))}
+          </Box>
+        );
+
       case 'review':
+        if (!data) {
+          return (
+            <Typography variant="body1" color="text.secondary" align="center" mt={2}>
+              No house info data found.
+            </Typography>
+          );
+        }
         return (
           <Box>
             <Typography variant="h6">House Review</Typography>
-            {/* Render review-related content */}
+            {/* Render review-related content here */}
           </Box>
         );
+
       default:
-        return null;
+        return (
+          <Typography variant="body1" color="text.secondary" align="center" mt={2}>
+            Select a section to view data.
+          </Typography>
+        );
     }
   };
 
