@@ -1,4 +1,31 @@
 const Calendar = () => {
+  const daysOfTheWeek: string[] = [
+    'SUNDAY',
+    'MONDAY',
+    'TUESDAY',
+    'WEDNESDAY',
+    'THURSDAY',
+    'FRIDAY',
+    'SATURDAY',
+  ];
+
+  const monthsOfTheYear: string[] = [
+    'JANUARY',
+    'FEBRUAY',
+    'MARCH',
+    'APRIL',
+    'MAY',
+    'JUNE',
+    'JULY',
+    'AUGUST',
+    'SEPTEMBER',
+    'OCTOBER',
+    'NOVEMBER',
+    'DECEMBER',
+  ];
+
+  const today = new Date();
+
   return (
     <div className="calendar-container">
       <div className="string-left"></div>
@@ -6,12 +33,19 @@ const Calendar = () => {
       <div className="pin calendar-pin"></div>
       <div className="calendar">
         <div className="date-container">
-          <div className="date-display">FRIDAY</div>
-          <div className="date-display">0</div>
-          <div className="date-display">6</div>
-          <div className="date-display">JUNE</div>
+          <div className="date-display">{daysOfTheWeek[today.getDay()]}</div>
+          <div className="date-display">
+            {today.getDate() < 10 ? 0 : today.getDate() < 20 ? 1 : today.getDate() < 30 ? 2 : 3}
+          </div>
+          <div className="date-display">{today.getDate() % 10}</div>
+          <div className="date-display">{monthsOfTheYear[today.getMonth()]}</div>
         </div>
-        <div className="image-container"></div>
+        <div
+          className="image-container"
+          style={{
+            backgroundImage: `url(/calendar_photos/${monthsOfTheYear[today.getMonth()].toLowerCase()}.png)`,
+          }}
+        ></div>
         <div className="information">
           <h1 className="heading">My Cleaning Tasks:</h1>
           <div className="task-container">
