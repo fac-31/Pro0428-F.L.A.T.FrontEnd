@@ -1,10 +1,6 @@
 import React from 'react';
 import { Box, Typography, CircularProgress } from '@mui/material';
-<<<<<<< HEAD
 import { HouseInfo, testDBUser, Bills } from '../../types/types';
-=======
-import { HouseInfo, testDBUser } from '../../types/types';
->>>>>>> c17225b39f8acd637ae8e1559966232e63b29748
 
 interface FridgeBigDoorProps {
   isOpen: boolean;
@@ -12,10 +8,7 @@ interface FridgeBigDoorProps {
   activeSection: 'cleaning' | 'bills' | 'review' | null;
   data: HouseInfo | null;
   testDbData?: testDBUser[] | null;
-<<<<<<< HEAD
   billsData?: Bills[] | null;
-=======
->>>>>>> c17225b39f8acd637ae8e1559966232e63b29748
   loading: boolean;
 }
 
@@ -24,12 +17,8 @@ const FridgeBigDoor: React.FC<FridgeBigDoorProps> = ({
   onToggle,
   activeSection,
   data,
-<<<<<<< HEAD
   testDbData,
   billsData,
-=======
-  testDbData, // <- now used!
->>>>>>> c17225b39f8acd637ae8e1559966232e63b29748
   loading,
 }) => {
   const renderContent = () => {
@@ -38,49 +27,10 @@ const FridgeBigDoor: React.FC<FridgeBigDoorProps> = ({
         <Box display="flex" justifyContent="center" mt={2}>
           <CircularProgress />
         </Box>
-<<<<<<< HEAD
-=======
-      );
-    }
-
-    if (activeSection === 'cleaning') {
-      if (!testDbData || testDbData.length === 0) {
-        return (
-          <Typography variant="body1" color="text.secondary" align="center" mt={2}>
-            No cleaning (test DB) data found.
-          </Typography>
-        );
-      }
-
-      return (
-        <Box>
-          <Typography variant="h6" gutterBottom>
-            Cleaning Test Data
-          </Typography>
-          {testDbData.map((user) => (
-            <Box key={user.user_id} mb={2} p={1} border="1px solid #ccc" borderRadius={2}>
-              <Typography>Name: {user.name}</Typography>
-              <Typography>Email: {user.email}</Typography>
-              <Typography>Created At: {new Date(user.created_at).toLocaleString()}</Typography>
-              <Typography>House ID: {user.house_id}</Typography>
-            </Box>
-          ))}
-        </Box>
-      );
-    }
-
-    // If not cleaning section, fallback to house info
-    if (!data) {
-      return (
-        <Typography variant="body1" color="text.secondary" align="center" mt={2}>
-          No house info data found.
-        </Typography>
->>>>>>> c17225b39f8acd637ae8e1559966232e63b29748
       );
     }
 
     switch (activeSection) {
-<<<<<<< HEAD
       case 'cleaning':
         if (!testDbData || testDbData.length === 0) {
           return (
@@ -105,8 +55,6 @@ const FridgeBigDoor: React.FC<FridgeBigDoorProps> = ({
           </Box>
         );
 
-=======
->>>>>>> c17225b39f8acd637ae8e1559966232e63b29748
       case 'bills':
         if (!billsData || billsData.length === 0) {
           return (
@@ -117,7 +65,6 @@ const FridgeBigDoor: React.FC<FridgeBigDoorProps> = ({
         }
         return (
           <Box>
-<<<<<<< HEAD
             <Typography variant="h6" gutterBottom>
               Bills Info
             </Typography>
@@ -162,19 +109,6 @@ const FridgeBigDoor: React.FC<FridgeBigDoorProps> = ({
           </Box>
         );
 
-=======
-            <Typography variant="h6">Bills Info</Typography>
-            {/* Render bills-related content */}
-          </Box>
-        );
-      case 'review':
-        return (
-          <Box>
-            <Typography variant="h6">House Review</Typography>
-            {/* Render review-related content */}
-          </Box>
-        );
->>>>>>> c17225b39f8acd637ae8e1559966232e63b29748
       default:
         return (
           <Typography variant="body1" color="text.secondary" align="center" mt={2}>
