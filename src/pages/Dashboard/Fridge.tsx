@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import FridgeTop from './FridgeTop';
-import FridgeBottom from './FridgeBottom';
+import FridgeTop from './FridgeTopDoor';
+import FridgeBottom from './FridgeBigDoor';
 import { fetchHouseInfo } from '../../api/houseInfo';
 import { fetchTestDbInfo } from '../../api/testDB';
 import { HouseInfo, testDBUser } from '../../types/types';
