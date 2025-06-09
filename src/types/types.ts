@@ -8,6 +8,7 @@ export interface CleaningTask {
   created_at?: string;
 }
 
+
 export interface Bills {
   bill_id: string;
   house_id: string;

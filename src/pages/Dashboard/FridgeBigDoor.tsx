@@ -1,13 +1,13 @@
 import React from 'react';
 import { Box, Typography, CircularProgress } from '@mui/material';
-import { HouseInfo, testDBUser, Bills } from '../../types/types';
+import { HouseInfo, Bills, CleaningTask } from '../../types/types';
 
 interface FridgeBigDoorProps {
   isOpen: boolean;
   onToggle: () => void;
   activeSection: 'cleaning' | 'bills' | 'review' | null;
   data: HouseInfo | null;
-  testDbData?: testDBUser[] | null;
+  cleaningData?: CleaningTask[] | null;
   billsData?: Bills[] | null;
   loading: boolean;
 }
@@ -17,7 +17,7 @@ const FridgeBigDoor: React.FC<FridgeBigDoorProps> = ({
   onToggle,
   activeSection,
   data,
-  testDbData,
+  cleaningData,
   billsData,
   loading,
 }) => {
@@ -31,29 +31,46 @@ const FridgeBigDoor: React.FC<FridgeBigDoorProps> = ({
     }
 
     switch (activeSection) {
-      case 'cleaning':
-        if (!testDbData || testDbData.length === 0) {
-          return (
-            <Typography variant="body1" color="text.secondary" align="center" mt={2}>
-              No cleaning (test DB) data found.
+case 'cleaning':
+  if (!cleaningData || cleaningData.length === 0) {
+    return (
+      <Typography variant="body1" color="text.secondary" align="center" mt={2}>
+        No cleaning data found.
+      </Typography>
+    );
+  }
+
+  return (
+    <Box>
+      <Typography variant="h6" gutterBottom>
+        Cleaning Tasks
+      </Typography>
+      {cleaningData.map((task, index) => (
+        <Box
+          key={task.cleaning_task_id || index}
+          mb={2}
+          p={1}
+          border="1px solid #ccc"
+          borderRadius={2}
+        >
+          <Typography>Task: {task.description}</Typography>
+          <Typography>Assigned To: {task.assigned_to_user}</Typography>
+          <Typography>Status: {task.task_complete ? 'Completed' : 'Pending'}</Typography>
+          {task.due_date && (
+            <Typography>
+              Due Date: {new Date(task.due_date).toLocaleDateString()}
             </Typography>
-          );
-        }
-        return (
-          <Box>
-            <Typography variant="h6" gutterBottom>
-              Cleaning Test Data
+          )}
+          {task.created_at && (
+            <Typography>
+              Created At: {new Date(task.created_at).toLocaleString()}
             </Typography>
-            {testDbData.map((user) => (
-              <Box key={user.user_id} mb={2} p={1} border="1px solid #ccc" borderRadius={2}>
-                <Typography>Name: {user.name}</Typography>
-                <Typography>Email: {user.email}</Typography>
-                <Typography>Created At: {new Date(user.created_at).toLocaleString()}</Typography>
-                <Typography>House ID: {user.house_id}</Typography>
-              </Box>
-            ))}
-          </Box>
-        );
+          )}
+        </Box>
+      ))}
+    </Box>
+  );
+
 
       case 'bills':
         if (!billsData || billsData.length === 0) {
