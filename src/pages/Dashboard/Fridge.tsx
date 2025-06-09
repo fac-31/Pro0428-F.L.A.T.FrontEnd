@@ -1,7 +1,6 @@
 import { useState } from 'react';
-import { Container, Paper, Box } from '@mui/material';
-import FridgeTopDoor from './FridgeTopDoor';
-import FridgeBigDoor from './FridgeBigDoor';
+import FridgeTop from './FridgeTopDoor';
+import FridgeBottom from './FridgeBigDoor';
 import { fetchHouseInfo, fetchBills, fetchCleaningTasks } from '../../api/houseInfo';
 import { HouseInfo, Bills, CleaningTask } from '../../types/types';
 
@@ -44,36 +43,18 @@ const Fridge = () => {
   };
 
   return (
-    <Container maxWidth="lg">
-      <Box display="flex" justifyContent="center" alignItems="center" minHeight="80vh">
-        <Paper
-          elevation={4}
-          sx={{
-            width: 500,
-            height: 800,
-            borderRadius: '80px 80px 0 0',
-            position: 'relative',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            backgroundColor: '#d7ebf5',
-            perspective: '800px',
-            transformStyle: 'preserve-3d',
-          }}
-        >
-          <FridgeTopDoor onSectionClick={handleSectionClick} />
-          <FridgeBigDoor
-            isOpen={isOpen}
-            onToggle={() => setIsOpen(!isOpen)}
-            activeSection={activeSection}
-            data={houseInfo}
-            cleaningData={cleaningData}
-            billsData={billsData}
-            loading={loading}
-          />
-        </Paper>
-      </Box>
-    </Container>
+    <div className="fridge-container">
+      <FridgeTop onSectionClick={handleSectionClick} />
+      <FridgeBottom
+        isOpen={isOpen}
+        onToggle={() => setIsOpen(!isOpen)}
+        activeSection={activeSection}
+        data={houseInfo}
+        cleaningData={cleaningData}
+        billsData={billsData}
+        loading={loading}
+      />
+    </div>
   );
 };
 
