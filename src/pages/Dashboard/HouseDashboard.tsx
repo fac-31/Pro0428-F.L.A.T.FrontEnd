@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import React from 'react';
+import { AppBar, Toolbar, Typography, Button, Box } from '@mui/material';
 import Calendar from './Calendar';
 import Fridge from './Fridge';
 import Poster from './Poster';
@@ -14,34 +15,23 @@ const HouseDashboard = () => {
   };
 
   return (
-    <div className="kitchen">
-      <Poster />
-      <Fridge />
-      <Calendar />
-    </div>
-    <>
+    <Box>
       <AppBar position="static" color="primary">
         <Toolbar>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             F.L.A.T Dashboard
           </Typography>
-          <Button
-            color="inherit"
-            onClick={handleLogout}
-            sx={{
-              '&:hover': {
-                backgroundColor: 'rgba(255, 255, 255, 0.1)',
-              },
-            }}
-          >
+          <Button color="inherit" onClick={handleLogout}>
             Logout
           </Button>
         </Toolbar>
       </AppBar>
-      <Container maxWidth="lg" sx={{ mt: 2 }}>
+      <div className="kitchen">
+        <Poster />
         <Fridge />
-      </Container>
-    </>
+        <Calendar />
+      </div>
+    </Box>
   );
 };
 
