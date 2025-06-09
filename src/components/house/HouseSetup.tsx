@@ -1,20 +1,41 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Container, Box, Typography, Button, TextField, Paper, Grid } from '@mui/material';
+import api from '../../api/axios';
 
 const HouseSetup = () => {
   const navigate = useNavigate();
   const [showJoinInput, setShowJoinInput] = useState(false);
   const [houseCode, setHouseCode] = useState('');
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
-  const handleJoinHouse = (e: React.FormEvent) => {
+  const handleJoinHouse = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implement actual house joining logic - currently accepts anything
-    navigate('/welcome');
+    setLoading(true);
+    setErrorMsg(null);
+
+    try {
+      // TODO: Implement actual house joining logic
+      const response = await api.post('/api/houses/join', { house_code: houseCode });
+      
+      if (response.status === 200 || response.status === 201) {
+        const houseId = response.data.house_id;
+        localStorage.setItem('house_id', houseId);
+        navigate('/welcome');
+      } else {
+        setErrorMsg('Invalid house code. Please try again.');
+      }
+    } catch (error: any) {
+      console.error('Join house error:', error);
+      setErrorMsg(error.response?.data?.error || 'Failed to join house. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleCreateHouse = () => {
-    navigate('/welcome');
+    navigate('/house-details');  // Changed from '/welcome' to '/house-details'
   };
 
   return (
@@ -31,6 +52,11 @@ const HouseSetup = () => {
           <Typography component="h1" variant="h5" align="center" gutterBottom>
             House Setup
           </Typography>
+          {errorMsg && (
+            <Typography color="error" variant="body2" sx={{ mt: 1, textAlign: 'center' }}>
+              {errorMsg}
+            </Typography>
+          )}
 
           {!showJoinInput ? (
             <Grid container spacing={2} sx={{ mt: 2 }}>
@@ -40,12 +66,18 @@ const HouseSetup = () => {
                   variant="contained"
                   onClick={() => setShowJoinInput(true)}
                   sx={{ mb: 2 }}
+                  disabled={loading}
                 >
                   Join Existing House
                 </Button>
               </Grid>
               <Grid item xs={12}>
-                <Button fullWidth variant="outlined" onClick={handleCreateHouse}>
+                <Button 
+                  fullWidth 
+                  variant="outlined" 
+                  onClick={handleCreateHouse}
+                  disabled={loading}
+                >
                   Create New House
                 </Button>
               </Grid>
@@ -62,16 +94,27 @@ const HouseSetup = () => {
                 value={houseCode}
                 onChange={(e) => setHouseCode(e.target.value)}
                 autoFocus
+                disabled={loading}
               />
               <Grid container spacing={2} sx={{ mt: 1 }}>
                 <Grid item xs={6}>
-                  <Button fullWidth variant="outlined" onClick={() => setShowJoinInput(false)}>
+                  <Button 
+                    fullWidth 
+                    variant="outlined" 
+                    onClick={() => setShowJoinInput(false)}
+                    disabled={loading}
+                  >
                     Back
                   </Button>
                 </Grid>
                 <Grid item xs={6}>
-                  <Button type="submit" fullWidth variant="contained">
-                    Join House
+                  <Button 
+                    type="submit" 
+                    fullWidth 
+                    variant="contained"
+                    disabled={loading}
+                  >
+                    {loading ? 'Joining...' : 'Join House'}
                   </Button>
                 </Grid>
               </Grid>
