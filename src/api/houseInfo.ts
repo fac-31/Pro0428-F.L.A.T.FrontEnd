@@ -1,10 +1,13 @@
 import { CleaningTask, Bills, HouseInfo } from 'types/types';
 
 export const fetchCleaningTasks = async (): Promise<CleaningTask[]> => {
-  const res = await fetch('/api/cleaning-tasks', {
+  const token = localStorage.getItem('token');
+  if (!token) throw new Error('No auth token found');
+
+  const res = await fetch('http://localhost:5000/api/fetch-cleaning', {
     method: 'GET',
     headers: {
-      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
     },
   });
 
@@ -19,10 +22,13 @@ export const fetchCleaningTasks = async (): Promise<CleaningTask[]> => {
 };
 
 export const fetchBills = async (): Promise<Bills[]> => {
-  const res = await fetch('/api/bills', {
+  const token = localStorage.getItem('token');
+  if (!token) throw new Error('No auth token found');
+
+  const res = await fetch('http://localhost:5000/api/fetch-bill', {
     method: 'GET',
     headers: {
-      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
     },
   });
 
@@ -53,10 +59,10 @@ export const fetchHouseInfo = async (): Promise<HouseInfo> => {
   return json.data as HouseInfo;
 };
 
-export const fetchTestDbData = async () => {
-  const response = await fetch('http://localhost:5000/api/test-db');
-  if (!response.ok) {
-    throw new Error('Failed to fetch test DB data');
-  }
-  return response.json();
-};
+//export const fetchTestDbData = async () => {
+//  const response = await fetch('http://localhost:5000/api/test-db');
+//  if (!response.ok) {
+//    throw new Error('Failed to fetch test DB data');
+//  }
+//  return response.json();
+//};
