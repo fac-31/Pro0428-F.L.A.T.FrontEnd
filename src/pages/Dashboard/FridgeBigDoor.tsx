@@ -206,6 +206,7 @@ const FridgeBottom: React.FC<FridgeBottomProps> = ({
             </form>
           </>
         );
+
       case 'review':
         if (!data) {
           return <h1>No house info data found.</h1>;
@@ -243,6 +244,7 @@ const FridgeBottom: React.FC<FridgeBottomProps> = ({
             </div>
           </>
         );
+
       default:
         return <h1>Select a section to view data.</h1>;
     }
