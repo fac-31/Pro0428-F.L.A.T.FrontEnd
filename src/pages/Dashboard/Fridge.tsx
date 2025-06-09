@@ -2,15 +2,24 @@ import { useState } from 'react';
 import { Container, Paper, Box } from '@mui/material';
 import FridgeTopDoor from './FridgeTopDoor';
 import FridgeBigDoor from './FridgeBigDoor';
+<<<<<<< HEAD
 import { fetchHouseInfo, fetchBills } from '../../api/houseInfo';
 import { fetchTestDbInfo } from '../../api/testDB';
 import { HouseInfo, testDBUser, Bills } from '../../types/types';
+=======
+import { fetchHouseInfo } from '../../api/houseInfo';
+import { fetchTestDbInfo } from '../../api/testDB';
+import { HouseInfo, testDBUser } from '../../types/types';
+>>>>>>> c17225b39f8acd637ae8e1559966232e63b29748
 
 const Fridge = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [activeSection, setActiveSection] = useState<'cleaning' | 'bills' | 'review' | null>(null);
   const [houseInfo, setHouseInfo] = useState<HouseInfo | null>(null);
+<<<<<<< HEAD
   const [billsData, setBillsData] = useState<Bills[] | null>(null);
+=======
+>>>>>>> c17225b39f8acd637ae8e1559966232e63b29748
   const [testDbData, setTestDbData] = useState<testDBUser[] | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -26,6 +35,7 @@ const Fridge = () => {
         console.log('Test data received:', data);
         setTestDbData(data);
         setHouseInfo(null);
+<<<<<<< HEAD
       } else if (section === 'bills') {
         console.log('fetching bills data');
         const bills = await fetchBills();
@@ -33,6 +43,8 @@ const Fridge = () => {
         setBillsData(bills);
         setHouseInfo(null);
         setTestDbData(null);
+=======
+>>>>>>> c17225b39f8acd637ae8e1559966232e63b29748
       } else {
         const data = await fetchHouseInfo();
         setHouseInfo(data);
@@ -72,7 +84,10 @@ const Fridge = () => {
             activeSection={activeSection}
             data={houseInfo}
             testDbData={testDbData}
+<<<<<<< HEAD
             billsData={billsData}
+=======
+>>>>>>> c17225b39f8acd637ae8e1559966232e63b29748
             loading={loading}
           />
         </Paper>
