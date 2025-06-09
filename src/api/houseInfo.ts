@@ -24,9 +24,9 @@ export const fetchBills = async (): Promise<Bills[]> => {
 
   const res = await fetch('http://localhost:5000/api/fetch-bill', {
     method: 'GET',
-     headers: {
-    Authorization: `Bearer ${token}`, 
-  },
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
   });
 
   if (!res.ok) throw new Error('Failed to fetch bills');
@@ -55,4 +55,3 @@ export const fetchHouseInfo = async (): Promise<HouseInfo> => {
 
   return json.data as HouseInfo;
 };
-

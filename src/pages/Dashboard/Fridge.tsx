@@ -14,7 +14,6 @@ const Fridge = () => {
   const [testDbData, setTestDbData] = useState<testDBUser[] | null>(null);
   const [loading, setLoading] = useState(false);
 
-
   const handleSectionClick = async (section: 'cleaning' | 'bills' | 'review') => {
     setActiveSection(section);
     setIsOpen(true);
