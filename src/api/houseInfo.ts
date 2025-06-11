@@ -1,4 +1,4 @@
-import { CleaningTask, Bills, HouseInfo } from 'types/types';
+import { usersCleaningTask, CleaningTask, Bills, HouseInfo } from 'types/types';
 
 export const fetchCleaningTasks = async (): Promise<CleaningTask[]> => {
   const token = localStorage.getItem('token');
@@ -57,6 +57,53 @@ export const fetchHouseInfo = async (): Promise<HouseInfo> => {
     throw new Error('Failed to fetch house info: ' + (json.message || 'Unknown error'));
 
   return json.data as HouseInfo;
+};
+
+export const fetchSingleUserTask = async (): Promise<usersCleaningTask[]> => {
+  const token = localStorage.getItem('token');
+  if (!token) throw new Error('No auth token found');
+
+  const res = await fetch('http://localhost:5000/api/fetch-cleaning-user', {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!res.ok) {
+    const errorText = await res.text();
+    throw new Error(`Failed to fetch cleaning tasks: ${res.status} ${errorText}`);
+  }
+
+  const json = await res.json();
+
+  if (!json.success) {
+    throw new Error(`Failed to fetch tasks: ${json.message || 'Unknown error'}`);
+  }
+
+  return json.data as usersCleaningTask[];
+};
+
+export const updateTaskStatus = async (taskId: string, taskComplete: boolean): Promise<void> => {
+  const token = localStorage.getItem('token');
+  if (!token) throw new Error('No auth token found');
+
+  const res = await fetch('http://localhost:5000/api/update-cleaning-user', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({
+      cleaning_task_id: taskId,
+      task_complete: taskComplete,
+    }),
+  });
+
+  if (!res.ok) {
+    const errorBody = await res.json();
+    throw new Error(errorBody.error || 'Failed to update task status');
+  }
 };
 
 //export const fetchTestDbData = async () => {
