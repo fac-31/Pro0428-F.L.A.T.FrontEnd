@@ -7,6 +7,11 @@ export interface CleaningTask {
   task_complete?: boolean;
   created_at?: string;
 }
+export interface usersCleaningTask {
+  cleaning_task_id: string;
+  description: string;
+  task_complete?: boolean;
+}
 
 export interface Bills {
   bill_id: string;
