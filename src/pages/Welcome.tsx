@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Container,
@@ -11,8 +11,7 @@ import {
   ListItem,
   Divider,
 } from '@mui/material';
-
-const API_URL = 'http://localhost:8001';
+import pythonApi from '../api/pythonApi';
 
 interface Message {
   role: string;
@@ -44,6 +43,7 @@ interface WelcomeResponse {
 
 const Welcome = () => {
   const navigate = useNavigate();
+  const messagesEndRef = useRef<HTMLDivElement>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
@@ -54,27 +54,27 @@ const Welcome = () => {
   // Get auth token from localStorage
   const authToken = localStorage.getItem('token');
 
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
   useEffect(() => {
-    // Fetch initial welcome message from the AI agent
+    scrollToBottom();
+  }, [messages]);
+
+  useEffect(() => {
     const fetchWelcome = async () => {
       setLoading(true);
       try {
         const initialMessage: Message = { role: 'user', content: 'Hello' };
         setMessageHistory([initialMessage]);
 
-        const res = await fetch(`${API_URL}/api/welcome`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            messages: [initialMessage],
-          }),
+        // Use the Python API for welcome chat
+        const res = await pythonApi.post('/welcome', {
+          messages: [initialMessage],
         });
 
-        if (!res.ok) {
-          throw new Error(`HTTP error! status: ${res.status}`);
-        }
-
-        const data = await res.json();
+        const data = res.data;
         const aiMessage: Message = { role: 'assistant', content: data.response };
         setMessageHistory((prev) => [...prev, aiMessage]);
         setMessages([{ sender: 'ai', text: data.response }]);
@@ -88,18 +88,6 @@ const Welcome = () => {
     fetchWelcome();
   }, []);
 
-  /* replaced by new completion check: data.isComplete
-  const checkConversationComplete = (response: string): boolean => {
-    const completionPhrases = [
-      'summary of your preferences',
-      'all preferences collected',
-      'preferences have been recorded',
-      'thank you for sharing your preferences',
-      'preferences have been saved',
-    ];
-    return completionPhrases.some((phrase) => response.toLowerCase().includes(phrase));
-  };*/
-
   const sendMessage = async () => {
     if (!input.trim() || isConversationComplete) return;
 
@@ -112,21 +100,12 @@ const Welcome = () => {
     setLoading(true);
 
     try {
-      // If conversation is not complete, continue with welcome agent
-      const endpoint = isConversationComplete ? '/api/preferences' : '/api/welcome';
-      const res = await fetch(`${API_URL}${endpoint}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          messages: [...messageHistory, userMessage],
-        }),
+      // Use the Python API for preferences
+      const res = await pythonApi.post('/preferences', {
+        messages: [...messageHistory, userMessage],
       });
 
-      if (!res.ok) {
-        throw new Error(`HTTP error! status: ${res.status}`);
-      }
-
-      const data: WelcomeResponse = await res.json();
+      const data: WelcomeResponse = res.data;
       const aiMessage: Message = { role: 'assistant', content: data.response };
       setMessageHistory((prev) => [...prev, aiMessage]);
       setMessages((prev) => [...prev, { sender: 'ai', text: data.response }]);
@@ -139,7 +118,7 @@ const Welcome = () => {
         data.housePreferences
       ) {
         setIsConversationComplete(true);
-
+        
         // Store the preferences
         setHousePreferences({
           summary: data.response,
@@ -147,29 +126,26 @@ const Welcome = () => {
           features: data.housePreferences.features,
         });
 
-        // Save the final preferences
+        // Save the final preferences using the Python API
         try {
           if (!authToken) {
             throw new Error('No authentication token found');
           }
-          const saveRes = await fetch(`${API_URL}/api/save-preferences`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${authToken}`,
-            },
-            body: JSON.stringify({
+
+          const saveRes = await pythonApi.post(
+            '/save-preferences',
+            {
               user_preferences: data.userPreferences,
               house_preferences: data.housePreferences,
-            }),
-          });
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${authToken}`,
+              },
+            }
+          );
 
-          if (!saveRes.ok) {
-            throw new Error(`Failed to save preferences: ${saveRes.status}`);
-          }
-
-          const saveResult = await saveRes.json();
-          if (saveResult.success) {
+          if (saveRes.data.success) {
             console.log('Preferences saved successfully');
             navigate('/house-dashboard');
           }
@@ -212,6 +188,7 @@ const Welcome = () => {
                 </Box>
               </ListItem>
             ))}
+            <div ref={messagesEndRef} />
           </List>
 
           {isConversationComplete && housePreferences && (
