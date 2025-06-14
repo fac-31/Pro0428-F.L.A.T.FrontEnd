@@ -12,7 +12,7 @@ import {
   Divider,
 } from '@mui/material';
 
-const API_URL = 'http://localhost:8001';
+const API_URL = import.meta.env.VITE_PYTHON_API_URL;
 
 interface Message {
   role: string;
@@ -40,6 +40,7 @@ interface WelcomeResponse {
   isComplete: boolean;
   userPreferences?: UserPreferences;
   housePreferences?: HousePreferences;
+  saveSuccess: boolean;
 }
 
 const Welcome = () => {
@@ -51,9 +52,6 @@ const Welcome = () => {
   const [messageHistory, setMessageHistory] = useState<Message[]>([]);
   const [isConversationComplete, setIsConversationComplete] = useState(false);
   const [housePreferences, setHousePreferences] = useState<HousePreferences | null>(null);
-
-  // Get auth token from localStorage
-  const authToken = localStorage.getItem('token');
 
   useEffect(() => {
     // Fetch initial welcome message from the AI agent
@@ -141,41 +139,20 @@ const Welcome = () => {
       ) {
         setIsConversationComplete(true);
 
-        // Store the preferences
+        // Store the preferences locally
         setHousePreferences({
           summary: data.response,
           details: data.response,
           features: data.housePreferences.features,
         });
 
-        // Save the final preferences
-        try {
-          if (!authToken) {
-            throw new Error('No authentication token found');
-          }
-          const saveRes = await fetch(`${API_URL}/api/save-preferences`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${authToken}`,
-            },
-            body: JSON.stringify({
-              user_preferences: data.userPreferences,
-              house_preferences: data.housePreferences,
-            }),
-          });
-
-          if (!saveRes.ok) {
-            throw new Error(`Failed to save preferences: ${saveRes.status}`);
-          }
-
-          const saveResult = await saveRes.json();
-          if (saveResult.success) {
-            console.log('Preferences saved successfully');
-            navigate('/house-dashboard');
-          }
-        } catch (error) {
-          console.error('Error saving preferences:', error);
+        // The Python backend will handle saving to Express/Supabase
+        // We just need to check if the save was successful
+        if (data.saveSuccess) {
+          console.log('Preferences saved successfully');
+          navigate('/house-dashboard');
+        } else {
+          console.error('Failed to save preferences');
           navigate('/welcome');
         }
       }
