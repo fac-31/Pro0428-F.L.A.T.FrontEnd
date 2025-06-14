@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Container,
@@ -44,6 +44,7 @@ interface WelcomeResponse {
 
 const Welcome = () => {
   const navigate = useNavigate();
+  const messagesEndRef = useRef<HTMLDivElement>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
@@ -186,6 +187,14 @@ const Welcome = () => {
     }
   };
 
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
   return (
     <Container component="main" maxWidth="sm">
       <Box sx={{ marginTop: 8, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -212,6 +221,7 @@ const Welcome = () => {
                 </Box>
               </ListItem>
             ))}
+            <div ref={messagesEndRef} />
           </List>
 
           {isConversationComplete && housePreferences && (
