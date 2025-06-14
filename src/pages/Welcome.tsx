@@ -13,6 +13,7 @@ import {
 } from '@mui/material';
 
 const API_URL = import.meta.env.VITE_PYTHON_API_URL;
+const NODE_API_URL = import.meta.env.VITE_API_URL;
 
 interface Message {
   role: string;
@@ -111,9 +112,8 @@ const Welcome = () => {
     setLoading(true);
 
     try {
-      // If conversation is not complete, continue with welcome agent
-      const endpoint = isConversationComplete ? '/api/preferences' : '/api/welcome';
-      const res = await fetch(`${API_URL}${endpoint}`, {
+      // Send to Python server
+      const res = await fetch(`${API_URL}/api/welcome`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -121,44 +121,53 @@ const Welcome = () => {
         }),
       });
 
-      if (!res.ok) {
-        throw new Error(`HTTP error! status: ${res.status}`);
-      }
+      if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
 
-      const data: WelcomeResponse = await res.json();
+      const data = await res.json();
       const aiMessage: Message = { role: 'assistant', content: data.response };
       setMessageHistory((prev) => [...prev, aiMessage]);
       setMessages((prev) => [...prev, { sender: 'ai', text: data.response }]);
 
-      // Check if conversation is complete based on backend response
-      if (
-        !isConversationComplete &&
-        data.isComplete &&
-        data.userPreferences &&
-        data.housePreferences
-      ) {
-        setIsConversationComplete(true);
+      // If conversation is complete, save preferences
+      if (data.isComplete) {
+        try {
+          // Parse preferences from the final response
+          const preferences = parsePreferences(data.response); // You'll need to implement this
 
-        // Store the preferences locally
-        setHousePreferences({
-          summary: data.response,
-          details: data.response,
-          features: data.housePreferences.features,
-        });
+          // Send to Node.js server
+          const saveRes = await fetch(`${NODE_API_URL}/api/save-preferences`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              preferences,
+              userId: localStorage.getItem('user_id'),
+              houseId: localStorage.getItem('house_id'),
+            }),
+          });
 
-        // The Python backend will handle saving to Express/Supabase
-        // We just need to check if the save was successful
-        if (data.saveSuccess) {
-          console.log('Preferences saved successfully');
-          navigate('/house-dashboard');
-        } else {
-          console.error('Failed to save preferences');
-          navigate('/welcome');
+          if (!saveRes.ok) throw new Error('Failed to save preferences');
+
+          const saveData = await saveRes.json();
+          if (saveData.success) {
+            setIsConversationComplete(true);
+            navigate('/house-dashboard');
+          } else {
+            throw new Error(saveData.error || 'Failed to save preferences');
+          }
+        } catch (saveError) {
+          console.error('Error saving preferences:', saveError);
+          setMessages((prev) => [...prev, { 
+            sender: 'ai', 
+            text: 'Failed to save preferences. Please try again.' 
+          }]);
         }
       }
     } catch (error) {
       console.error('Error sending message:', error);
-      setMessages((prev) => [...prev, { sender: 'ai', text: 'Failed to get response from AI.' }]);
+      setMessages((prev) => [...prev, { 
+        sender: 'ai', 
+        text: 'Failed to get response from AI.' 
+      }]);
     } finally {
       setLoading(false);
     }
