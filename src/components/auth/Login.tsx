@@ -29,12 +29,19 @@ const Login = () => {
         try {
           const payload = JSON.parse(atob(token.split('.')[1]));
           localStorage.setItem('user_id', payload.sub);
-          localStorage.setItem('house_id', payload.house_id);
+
+          // Check if user already has a house
+          if (payload.house_id) {
+            localStorage.setItem('house_id', payload.house_id);
+            navigate('/house-dashboard');
+          } else {
+            // If no house_id in token, go to house setup
+            navigate('/house-setup');
+          }
         } catch (decodeErr) {
           console.error('Failed to decode token:', decodeErr);
+          setErrorMsg('Failed to process login. Please try again.');
         }
-
-        navigate('/house-dashboard');
       }
     } catch (err) {
       console.error('Login error:', err);
