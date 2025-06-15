@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { fetchSingleUserTask } from '../../api/houseInfo.ts';
 import { updateTaskStatus } from '../../api/houseInfo.ts';
 import CalendarCleaningTaskList from './CalendarCleaningTaskList.tsx';
