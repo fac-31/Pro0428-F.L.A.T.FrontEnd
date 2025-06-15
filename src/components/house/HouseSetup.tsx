@@ -16,20 +16,48 @@ const HouseSetup = () => {
     setLoading(true);
     setErrorMsg(null);
 
+    const token = localStorage.getItem('token');
+    if (!token) {
+      setErrorMsg('Please log in to join a house.');
+      navigate('/login');
+      return;
+    }
+
     try {
-      const response = await api.post('/houses/join', { house_code: houseCode });
+      // Updated to match the API requirements exactly
+      const response = await api.post('/houses/join', {
+        house_id: houseCode, // Using the input value as the house_id
+      });
 
       if (response.status === 200 || response.status === 201) {
-        const houseId = response.data.house_id;
-        localStorage.setItem('house_id', houseId);
+        // Get a new token with the updated house_id
+        const tokenResponse = await api.post('/refresh-token');
+        if (tokenResponse.data.token) {
+          const newToken = tokenResponse.data.token;
+          localStorage.setItem('token', newToken);
+
+          // Update house_id from the new token
+          try {
+            const payload = JSON.parse(atob(newToken.split('.')[1]));
+            localStorage.setItem('house_id', payload.house_id);
+          } catch (decodeErr) {
+            console.error('Failed to decode new token:', decodeErr);
+          }
+        }
+
         navigate('/welcome');
-      } else {
-        setErrorMsg('Invalid house code. Please try again.');
       }
     } catch (error: unknown) {
       if (error instanceof AxiosError) {
         console.error('Join house error:', error);
-        setErrorMsg(error.response?.data?.error || 'Failed to join house. Please try again.');
+        if (error.response?.status === 401) {
+          setErrorMsg('Please log in to join a house.');
+          navigate('/login');
+        } else if (error.response?.status === 404) {
+          setErrorMsg('House not found. Please check the house ID and try again.');
+        } else {
+          setErrorMsg(error.response?.data?.error || 'Failed to join house. Please try again.');
+        }
       } else {
         setErrorMsg('An unexpected error occurred.');
       }
@@ -87,13 +115,15 @@ const HouseSetup = () => {
                 margin="normal"
                 required
                 fullWidth
-                id="houseCode"
-                label="House Code"
-                name="houseCode"
+                id="houseId"
+                label="House ID"
+                name="houseId"
                 value={houseCode}
                 onChange={(e) => setHouseCode(e.target.value)}
                 autoFocus
                 disabled={loading}
+                helperText="Enter the UUID of the house you want to join"
+                placeholder="e.g., 123e4567-e89b-12d3-a456-426614174000"
               />
               <Grid container spacing={2} sx={{ mt: 1 }}>
                 <Grid item xs={6}>
