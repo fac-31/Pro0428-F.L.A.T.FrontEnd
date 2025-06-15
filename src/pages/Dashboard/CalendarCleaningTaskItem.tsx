@@ -1,5 +1,6 @@
 import React from 'react';
 import { usersCleaningTask } from '../../types/types.ts';
+import styles from '../../styles/dashboard.module.css';
 
 interface Props {
   task: usersCleaningTask;
@@ -7,8 +8,8 @@ interface Props {
 }
 
 const CleaningTaskItem: React.FC<Props> = ({ task, onToggle }) => (
-  <div className="task">
-    <label className="task-name" htmlFor={task.cleaning_task_id}>
+  <div className={styles.task}>
+    <label className={styles.task_name} htmlFor={task.cleaning_task_id}>
       {task.description}
     </label>
     <input

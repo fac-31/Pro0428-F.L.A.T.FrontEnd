@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link as RouterLink } from 'react-router-dom';
 import { Container, Box, Typography, TextField, Button, Link, Paper } from '@mui/material';
 import { login } from './auth.ts';
+import styles from '../../styles/login.module.css';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -54,6 +55,7 @@ const Login = () => {
           alignItems: 'center',
         }}
       >
+        <div className={styles.random}></div>
         <Paper elevation={3} sx={{ p: 4, width: '100%' }}>
           <Typography component="h1" variant="h5" align="center" gutterBottom>
             Welcome Back

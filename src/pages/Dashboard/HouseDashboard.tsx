@@ -1,10 +1,9 @@
 import { useNavigate } from 'react-router-dom';
-import React from 'react';
-// import { AppBar, Toolbar, Typography, Button, Box } from '@mui/material';
 import Calendar from './Calendar';
 import Fridge from './Fridge';
 import Poster from './Poster';
 import { logout } from '../../components/auth/auth';
+import styles from '../../styles/dashboard.module.css';
 
 const HouseDashboard = () => {
   const navigate = useNavigate();
@@ -19,7 +18,7 @@ const HouseDashboard = () => {
       <button id="logout-button" onClick={handleLogout}>
         LOGOUT
       </button>
-      <div className="kitchen">
+      <div className={styles.kitchen}>
         <Poster />
         <Fridge />
         <Calendar />

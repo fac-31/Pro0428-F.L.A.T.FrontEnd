@@ -1,6 +1,7 @@
 import React from 'react';
 import { usersCleaningTask } from '../../types/types.ts';
 import CalendarCleaningTaskItem from './CalendarCleaningTaskItem.tsx';
+import styles from '../../styles/dashboard.module.css';
 
 interface Props {
   tasks: usersCleaningTask[];
@@ -13,7 +14,7 @@ const CalendarCleaningTaskList: React.FC<Props> = ({ tasks, onToggle, loading })
   if (tasks.length === 0) return <p>No cleaning tasks assigned.</p>;
 
   return (
-    <div className="task-container">
+    <div className={styles.task_container}>
       {tasks.map((task) => (
         <CalendarCleaningTaskItem key={task.cleaning_task_id} task={task} onToggle={onToggle} />
       ))}

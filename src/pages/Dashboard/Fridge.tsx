@@ -3,6 +3,7 @@ import FridgeTop from './FridgeTopDoor';
 import FridgeBottom from './FridgeBigDoor';
 import { fetchHouseInfo, fetchBills, fetchCleaningTasks } from '../../api/houseInfo';
 import { HouseInfo, Bills, CleaningTask } from '../../types/types';
+import styles from '../../styles/dashboard.module.css';
 
 const Fridge = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -43,7 +44,7 @@ const Fridge = () => {
   };
 
   return (
-    <div className="fridge-container">
+    <div className={styles.fridge_container}>
       <FridgeTop onSectionClick={handleSectionClick} />
       <FridgeBottom
         isOpen={isOpen}
