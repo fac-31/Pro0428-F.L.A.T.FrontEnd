@@ -27,6 +27,20 @@ export interface Bills {
   active: boolean;
 }
 
+interface PreferencesObject {
+  details: string;
+  summary: string;
+  features: string[];
+}
+
+export interface HousePreferences {
+  house_id: string;
+  address: string;
+  landlord_contact: Record<string, unknown> | null;
+  house_preferences: PreferencesObject | null;
+  created_at: string | null;
+}
+
 export interface HouseInfo {
   id: string;
 }
