@@ -1,6 +1,4 @@
 import { useNavigate } from 'react-router-dom';
-import React from 'react';
-// import { AppBar, Toolbar, Typography, Button, Box } from '@mui/material';
 import Calendar from './Calendar';
 import Fridge from './Fridge';
 import Poster from './Poster';
