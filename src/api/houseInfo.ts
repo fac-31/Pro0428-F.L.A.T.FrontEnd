@@ -1,4 +1,4 @@
-import { usersCleaningTask, CleaningTask, Bills, HouseInfo } from 'types/types';
+import { usersCleaningTask, CleaningTask, Bills, HouseInfo, HousePreferences } from 'types/types';
 
 export const fetchCleaningTasks = async (): Promise<CleaningTask[]> => {
   const token = localStorage.getItem('token');
@@ -113,3 +113,24 @@ export const updateTaskStatus = async (taskId: string, taskComplete: boolean): P
 //  }
 //  return response.json();
 //};
+
+export const fetchHousePreferences = async (): Promise<HousePreferences | null> => {
+  const token = localStorage.getItem('token');
+  if (!token) throw new Error('No auth token found');
+
+  const res = await fetch('http://localhost:5000/api/houses/house-preferences', {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!res.ok) throw new Error('Failed to fetch house preferences');
+
+  const json = await res.json();
+
+  if (!json.success)
+    throw new Error('Failed to fetch house preferences: ' + (json.message || 'Unknown error'));
+
+  return json.data as HousePreferences | null;
+};
