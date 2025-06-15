@@ -1,6 +1,8 @@
 import React, { useState, ChangeEvent, FormEvent } from 'react';
 import { CircularProgress } from '@mui/material';
 import { HouseInfo, Bills, CleaningTask } from '../../types/types';
+import api from '../../api/axios';
+import { AxiosError } from 'axios';
 import '../../styles/fridge-interior.css';
 
 interface FridgeBottomProps {
@@ -20,9 +22,14 @@ interface taskFormData {
 }
 
 interface billFormData {
-  type: string;
-  amount: string;
+  house_id: string;
+  bill_type: string;
+  bill_amount: string;
   due_date: string;
+  created_by_user: string;
+  paid?: boolean;
+  billing_period_start: string;
+  billing_period_end: string;
 }
 
 const FridgeBottom: React.FC<FridgeBottomProps> = ({
@@ -41,9 +48,14 @@ const FridgeBottom: React.FC<FridgeBottomProps> = ({
   });
 
   const [billFormData, setBillFormData] = useState<billFormData>({
-    type: '',
-    amount: '',
+    house_id: '',
+    bill_type: '',
+    bill_amount: '',
     due_date: '',
+    created_by_user: '',
+    paid: false,
+    billing_period_start: '',
+    billing_period_end: '',
   });
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -58,6 +70,20 @@ const FridgeBottom: React.FC<FridgeBottomProps> = ({
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+
+    try {
+      if (activeSection === 'cleaning') {
+        await api.post('/create-cleaning', taskFormData);
+      } else if (activeSection === 'bills') {
+        await api.post('/create-bill', billFormData);
+      }
+    } catch (error: unknown) {
+      if (error instanceof AxiosError) {
+        console.error('Task/bill creation error:', error);
+      } else {
+        console.log('An unexpected error occurred.');
+      }
+    }
   };
 
   const renderContent = () => {
@@ -176,7 +202,7 @@ const FridgeBottom: React.FC<FridgeBottomProps> = ({
                 id="bill-type"
                 type="text"
                 name="type"
-                value={billFormData.type}
+                value={billFormData.bill_type}
                 onChange={handleChange}
                 required
               />
@@ -187,7 +213,7 @@ const FridgeBottom: React.FC<FridgeBottomProps> = ({
                 id="bill-amount"
                 type="text"
                 name="amount"
-                value={billFormData.amount}
+                value={billFormData.bill_amount}
                 onChange={handleChange}
                 required
               />
