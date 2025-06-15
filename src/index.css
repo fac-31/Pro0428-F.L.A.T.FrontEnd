@@ -1,8 +1,6 @@
 @font-face {
   font-family: 'EurostileExtendedBlack';
-  src:
-    url('./assets/fonts/EurostileExtendedBlack.woff2') format('woff2'),
-    url('./assets/fonts/EurostileExtendedBlack.woff') format('woff');
+  src: url('./assets/fonts/EurostileExtendedBlack.woff') format('woff');
   font-weight: normal;
   font-style: normal;
 }

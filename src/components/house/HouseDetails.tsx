@@ -39,6 +39,13 @@ const HouseDetails = () => {
       if (response.status === 201 || response.status === 200) {
         const houseId = response.data.house_id;
         localStorage.setItem('house_id', houseId);
+
+        const tokenResponse = await api.post('/refresh-token');
+        if (tokenResponse.data.token) {
+          const newToken = tokenResponse.data.token;
+          localStorage.setItem('token', newToken);
+        }
+
         navigate('/welcome');
       } else {
         setErrorMsg('Failed to create house. Please try again.');

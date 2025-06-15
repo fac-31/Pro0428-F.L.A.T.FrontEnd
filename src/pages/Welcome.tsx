@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Container,
@@ -12,7 +12,8 @@ import {
   Divider,
 } from '@mui/material';
 
-const API_URL = 'http://localhost:8001';
+const API_URL = import.meta.env.VITE_PYTHON_API_URL;
+const NODE_API_URL = import.meta.env.VITE_API_URL;
 
 interface Message {
   role: string;
@@ -40,19 +41,78 @@ interface WelcomeResponse {
   isComplete: boolean;
   userPreferences?: UserPreferences;
   housePreferences?: HousePreferences;
+  saveSuccess: boolean;
 }
+
+const parsePreferences = (
+  data: WelcomeResponse
+): { userPreferences: UserPreferences; housePreferences: HousePreferences } => {
+  // If the server response already includes structured preferences, use those
+  if (data.userPreferences && data.housePreferences) {
+    return {
+      userPreferences: data.userPreferences,
+      housePreferences: data.housePreferences,
+    };
+  }
+
+  // Fallback to parsing from response text
+  try {
+    // Look for a JSON-like structure in the response
+    const jsonMatch = data.response.match(/\{[\s\S]*\}/);
+    if (jsonMatch) {
+      const parsed = JSON.parse(jsonMatch[0]);
+      if (parsed.userPreferences && parsed.housePreferences) {
+        return {
+          userPreferences: parsed.userPreferences,
+          housePreferences: parsed.housePreferences,
+        };
+      }
+    }
+  } catch (e) {
+    console.warn('Failed to parse preferences from response:', e);
+  }
+
+  // If parsing fails, create basic structures from the response text
+  return {
+    userPreferences: {
+      preferences: [data.response],
+      requirements: [data.response],
+    },
+    housePreferences: {
+      summary: data.response,
+      details: data.response,
+      features: [data.response],
+    },
+  };
+};
 
 const Welcome = () => {
   const navigate = useNavigate();
+  const messagesEndRef = useRef<HTMLDivElement>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [messageHistory, setMessageHistory] = useState<Message[]>([]);
   const [isConversationComplete, setIsConversationComplete] = useState(false);
   const [housePreferences, setHousePreferences] = useState<HousePreferences | null>(null);
+  const [userPreferences, setUserPreferences] = useState<UserPreferences | null>(null);
 
-  // Get auth token from localStorage
-  const authToken = localStorage.getItem('token');
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    const houseId = localStorage.getItem('house_id');
+
+    if (!token) {
+      console.error('No token found');
+      navigate('/login');
+      return;
+    }
+
+    if (!houseId) {
+      console.error('No house_id found');
+      navigate('/house-setup');
+      return;
+    }
+  }, [navigate]);
 
   useEffect(() => {
     // Fetch initial welcome message from the AI agent
@@ -62,7 +122,7 @@ const Welcome = () => {
         const initialMessage: Message = { role: 'user', content: 'Hello' };
         setMessageHistory([initialMessage]);
 
-        const res = await fetch(`${API_URL}/api/welcome`, {
+        const res = await fetch(`${API_URL}/welcome`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -103,6 +163,21 @@ const Welcome = () => {
   const sendMessage = async () => {
     if (!input.trim() || isConversationComplete) return;
 
+    const token = localStorage.getItem('token');
+    const houseId = localStorage.getItem('house_id');
+
+    if (!token || !houseId) {
+      setMessages((prev) => [
+        ...prev,
+        {
+          sender: 'ai',
+          text: 'Please complete house setup before continuing.',
+        },
+      ]);
+      navigate('/house-setup');
+      return;
+    }
+
     const userMessage: Message = { role: 'user', content: input };
     const userChatMessage: ChatMessage = { sender: 'user', text: input };
 
@@ -112,9 +187,8 @@ const Welcome = () => {
     setLoading(true);
 
     try {
-      // If conversation is not complete, continue with welcome agent
-      const endpoint = isConversationComplete ? '/api/preferences' : '/api/welcome';
-      const res = await fetch(`${API_URL}${endpoint}`, {
+      // Send to Python server
+      const res = await fetch(`${API_URL}/welcome`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -122,69 +196,86 @@ const Welcome = () => {
         }),
       });
 
-      if (!res.ok) {
-        throw new Error(`HTTP error! status: ${res.status}`);
-      }
+      if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
 
-      const data: WelcomeResponse = await res.json();
+      const data = await res.json();
       const aiMessage: Message = { role: 'assistant', content: data.response };
       setMessageHistory((prev) => [...prev, aiMessage]);
       setMessages((prev) => [...prev, { sender: 'ai', text: data.response }]);
 
-      // Check if conversation is complete based on backend response
-      if (
-        !isConversationComplete &&
-        data.isComplete &&
-        data.userPreferences &&
-        data.housePreferences
-      ) {
-        setIsConversationComplete(true);
-
-        // Store the preferences
-        setHousePreferences({
-          summary: data.response,
-          details: data.response,
-          features: data.housePreferences.features,
-        });
-
-        // Save the final preferences
+      // If conversation is complete, save preferences
+      if (data.isComplete) {
         try {
-          if (!authToken) {
-            throw new Error('No authentication token found');
-          }
-          const saveRes = await fetch(`${API_URL}/api/save-preferences`, {
+          const { userPreferences: parsedUserPrefs, housePreferences: parsedHousePrefs } =
+            parsePreferences(data);
+
+          setUserPreferences(parsedUserPrefs);
+          setHousePreferences(parsedHousePrefs);
+
+          const saveRes = await fetch(`${NODE_API_URL}/save-preferences`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
-              Authorization: `Bearer ${authToken}`,
+              Authorization: `Bearer ${token}`,
             },
             body: JSON.stringify({
-              user_preferences: data.userPreferences,
-              house_preferences: data.housePreferences,
+              user_preferences: parsedUserPrefs,
+              house_preferences: parsedHousePrefs,
+              userId: localStorage.getItem('user_id'),
+              houseId: houseId,
             }),
           });
 
           if (!saveRes.ok) {
-            throw new Error(`Failed to save preferences: ${saveRes.status}`);
+            if (saveRes.status === 401) {
+              localStorage.removeItem('token');
+              localStorage.removeItem('user_id');
+              localStorage.removeItem('house_id');
+              navigate('/login');
+              return;
+            }
+            throw new Error('Failed to save preferences');
           }
 
-          const saveResult = await saveRes.json();
-          if (saveResult.success) {
-            console.log('Preferences saved successfully');
+          const saveData = await saveRes.json();
+          if (saveData.success) {
+            setIsConversationComplete(true);
             navigate('/house-dashboard');
+          } else {
+            throw new Error(saveData.error || 'Failed to save preferences');
           }
-        } catch (error) {
-          console.error('Error saving preferences:', error);
-          navigate('/welcome');
+        } catch (saveError) {
+          console.error('Error saving preferences:', saveError);
+          setMessages((prev) => [
+            ...prev,
+            {
+              sender: 'ai',
+              text: 'Failed to save preferences. Please try again.',
+            },
+          ]);
         }
       }
     } catch (error) {
       console.error('Error sending message:', error);
-      setMessages((prev) => [...prev, { sender: 'ai', text: 'Failed to get response from AI.' }]);
+      setMessages((prev) => [
+        ...prev,
+        {
+          sender: 'ai',
+          text: 'Failed to get response from AI.',
+        },
+      ]);
     } finally {
       setLoading(false);
     }
   };
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
 
   return (
     <Container component="main" maxWidth="sm">
@@ -212,9 +303,10 @@ const Welcome = () => {
                 </Box>
               </ListItem>
             ))}
+            <div ref={messagesEndRef} />
           </List>
 
-          {isConversationComplete && housePreferences && (
+          {isConversationComplete && housePreferences && userPreferences && (
             <>
               <Divider sx={{ my: 2 }} />
               <Box sx={{ mt: 2, p: 2, bgcolor: 'success.light', borderRadius: 2 }}>
@@ -223,6 +315,14 @@ const Welcome = () => {
                 </Typography>
                 <Typography variant="body1" sx={{ whiteSpace: 'pre-wrap' }}>
                   {housePreferences.summary}
+                </Typography>
+              </Box>
+              <Box sx={{ mt: 2, p: 2, bgcolor: 'info.light', borderRadius: 2 }}>
+                <Typography variant="h6" gutterBottom>
+                  Your Preferences
+                </Typography>
+                <Typography variant="body1" sx={{ whiteSpace: 'pre-wrap' }}>
+                  {userPreferences.preferences.join(', ')}
                 </Typography>
               </Box>
             </>
