@@ -1,4 +1,12 @@
-import { usersCleaningTask, CleaningTask, Bills, HouseInfo, HousePreferences } from 'types/types';
+import {
+  usersCleaningTask,
+  CleaningTask,
+  CleaningTaskFormData,
+  Bills,
+  BillFormData,
+  HouseInfo,
+  HousePreferences,
+} from 'types/types';
 
 export const fetchCleaningTasks = async (): Promise<CleaningTask[]> => {
   const token = localStorage.getItem('token');
@@ -106,13 +114,39 @@ export const updateTaskStatus = async (taskId: string, taskComplete: boolean): P
   }
 };
 
-//export const fetchTestDbData = async () => {
-//  const response = await fetch('http://localhost:5000/api/test-db');
-//  if (!response.ok) {
-//    throw new Error('Failed to fetch test DB data');
-//  }
-//  return response.json();
-//};
+export const addCleaningTask = async (cleaningTaskData: CleaningTaskFormData): Promise<void> => {
+  const res = await fetch('http://localhost:5000/api/create-cleaning', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(cleaningTaskData),
+  });
+
+  if (!res.ok) {
+    const errorBody = await res.json();
+    throw new Error(errorBody.error || 'Failed to add new cleaning task.');
+  }
+};
+
+export const addBill = async (billData: BillFormData): Promise<void> => {
+  const token = localStorage.getItem('token');
+  if (!token) throw new Error('No auth token found');
+
+  const res = await fetch('http://localhost:5000/api/create-bill', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(billData),
+  });
+
+  if (!res.ok) {
+    const errorBody = await res.json();
+    throw new Error(errorBody.error || 'Failed to add new bill.');
+  }
+};
 
 export const fetchHousePreferences = async (): Promise<HousePreferences | null> => {
   const token = localStorage.getItem('token');

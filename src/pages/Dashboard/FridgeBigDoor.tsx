@@ -1,7 +1,7 @@
 import React, { useState, ChangeEvent, FormEvent } from 'react';
 import { CircularProgress } from '@mui/material';
 import { HouseInfo, Bills, CleaningTask } from '../../types/types';
-import api from '../../api/axios';
+import { addCleaningTask, addBill } from '../../api/houseInfo';
 import { AxiosError } from 'axios';
 import '../../styles/fridge-interior.css';
 
@@ -16,20 +16,15 @@ interface FridgeBottomProps {
 }
 
 interface taskFormData {
-  type: string;
+  description: string;
   assigned_to_user: string;
   due_date: string;
 }
 
 interface billFormData {
-  house_id: string;
   bill_type: string;
   bill_amount: string;
   due_date: string;
-  created_by_user: string;
-  paid?: boolean;
-  billing_period_start: string;
-  billing_period_end: string;
 }
 
 const FridgeBottom: React.FC<FridgeBottomProps> = ({
@@ -42,20 +37,15 @@ const FridgeBottom: React.FC<FridgeBottomProps> = ({
   loading,
 }) => {
   const [taskFormData, setTaskFormData] = useState<taskFormData>({
-    type: '',
+    description: '',
     assigned_to_user: '',
     due_date: '',
   });
 
   const [billFormData, setBillFormData] = useState<billFormData>({
-    house_id: '',
     bill_type: '',
     bill_amount: '',
     due_date: '',
-    created_by_user: '',
-    paid: false,
-    billing_period_start: '',
-    billing_period_end: '',
   });
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -73,9 +63,21 @@ const FridgeBottom: React.FC<FridgeBottomProps> = ({
 
     try {
       if (activeSection === 'cleaning') {
-        await api.post('/create-cleaning', taskFormData);
+        const dataToSend = {
+          assigned_to_user: taskFormData.assigned_to_user,
+          house_id: localStorage.getItem('house_id'),
+          description: taskFormData.description,
+          due_date: taskFormData.due_date,
+        };
+        await addCleaningTask(dataToSend);
       } else if (activeSection === 'bills') {
-        await api.post('/create-bill', billFormData);
+        const dataToSend = {
+          house_id: localStorage.getItem('house_id'),
+          bill_type: billFormData.bill_type,
+          bill_amount: billFormData.bill_amount,
+          due_date: billFormData.due_date,
+        };
+        await addBill(dataToSend);
       }
     } catch (error: unknown) {
       if (error instanceof AxiosError) {
@@ -131,7 +133,7 @@ const FridgeBottom: React.FC<FridgeBottomProps> = ({
                 id="task-name"
                 type="text"
                 name="type"
-                value={taskFormData.type}
+                value={taskFormData.description}
                 onChange={handleChange}
                 required
               />

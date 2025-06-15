@@ -7,6 +7,14 @@ export interface CleaningTask {
   task_complete?: boolean;
   created_at?: string;
 }
+
+export interface CleaningTaskFormData {
+  assigned_to_user?: string;
+  house_id?: string;
+  description: string;
+  due_date?: string;
+}
+
 export interface usersCleaningTask {
   cleaning_task_id: string;
   description: string;
@@ -25,6 +33,13 @@ export interface Bills {
   billing_period_end?: string;
   created_at?: string;
   active: boolean;
+}
+
+export interface BillFormData {
+  house_id: string;
+  bill_type: string;
+  bill_amount: string;
+  due_date: string;
 }
 
 interface PreferencesObject {
