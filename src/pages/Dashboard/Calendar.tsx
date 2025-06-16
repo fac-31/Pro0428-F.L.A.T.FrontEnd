@@ -1,14 +1,19 @@
-import { useEffect, useState } from 'react';
-import { fetchSingleUserTask } from '../../api/houseInfo.ts';
-import { updateTaskStatus } from '../../api/houseInfo.ts';
+import { useEffect, useState, FormEvent } from 'react';
+import { fetchSingleUserTask, addReview } from '../../api/houseInfo.ts';
 import CalendarCleaningTaskList from './CalendarCleaningTaskList.tsx';
+import { AxiosError } from 'axios';
 import { usersCleaningTask } from '../../types/types.ts';
 import classNames from 'classnames';
 import styles from '../../styles/dashboard.module.css';
 
-const Calendar = () => {
-  const [tasks, setTasks] = useState<usersCleaningTask[]>([]);
+interface CalendarProps {
+  userTaskData: usersCleaningTask[] | null;
+  updateTasks: (taskId: string, newStatus: boolean) => Promise<void>;
+}
+
+const Calendar: React.FC<CalendarProps> = ({ userTaskData, updateTasks }) => {
   const [loading, setLoading] = useState(true);
+  const [reviewFormData, setReviewFormData] = useState('');
 
   const today = new Date();
   const days = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'];
@@ -30,8 +35,7 @@ const Calendar = () => {
   useEffect(() => {
     const load = async () => {
       try {
-        const data = await fetchSingleUserTask();
-        setTasks(data);
+        await fetchSingleUserTask();
       } catch (e) {
         console.error('Error:', e);
       } finally {
@@ -43,14 +47,28 @@ const Calendar = () => {
 
   const handleToggle = async (taskId: string, currentStatus: boolean) => {
     try {
-      await updateTaskStatus(taskId, !currentStatus);
-      setTasks((prev) =>
-        prev.map((task) =>
-          task.cleaning_task_id === taskId ? { ...task, task_complete: !currentStatus } : task
-        )
-      );
+      await updateTasks(taskId, !currentStatus);
     } catch (e) {
       console.error('Failed to update status:', e);
+    }
+  };
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+
+    try {
+      const dataToSend = {
+        house_id: localStorage.getItem('house_id'),
+        individual_survey_result: reviewFormData,
+      };
+      await addReview(dataToSend);
+      setReviewFormData('');
+    } catch (error: unknown) {
+      if (error instanceof AxiosError) {
+        console.error('Task/bill creation error:', error);
+      } else {
+        console.log('An unexpected error occurred.');
+      }
     }
   };
 
@@ -73,12 +91,12 @@ const Calendar = () => {
           }}
         ></div>
 
-        <div className={styles.information}>
-          <h1 className={styles.heading}>My Cleaning Tasks:</h1>
+        <div className="information">
+          <h1 className="heading">My Cleaning Tasks:</h1>
           <CalendarCleaningTaskList tasks={tasks} loading={loading} onToggle={handleToggle} />
 
-          <h1 className={styles.heading}>Review Submission:</h1>
-          <form className={styles.review_form}>
+          <h1 className="heading">Review Submission:</h1>
+          <form className="review-form">
             <textarea id="review" name="review" rows={4}></textarea>
             <input id="submit-review" type="submit" value="SUBMIT" />
           </form>

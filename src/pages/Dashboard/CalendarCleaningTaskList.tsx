@@ -4,19 +4,19 @@ import CalendarCleaningTaskItem from './CalendarCleaningTaskItem.tsx';
 import styles from '../../styles/dashboard.module.css';
 
 interface Props {
-  tasks: usersCleaningTask[];
-  onToggle: (taskId: string, currentStatus: boolean) => void;
+  userTaskData: usersCleaningTask[] | null;
+  onToggle: (taskId: string, currentStatus: boolean) => Promise<void>;
   loading: boolean;
 }
 
-const CalendarCleaningTaskList: React.FC<Props> = ({ tasks, onToggle, loading }) => {
+const CalendarCleaningTaskList: React.FC<Props> = ({ userTaskData, onToggle, loading }) => {
   if (loading) return <p>Loading tasks...</p>;
-  if (tasks.length === 0) return <p>No cleaning tasks assigned.</p>;
+  if (!userTaskData || userTaskData.length === 0) return <p>No cleaning tasks assigned.</p>;
 
   return (
-    <div className={styles.task_container}>
-      {tasks.map((task) => (
-        <CalendarCleaningTaskItem key={task.cleaning_task_id} task={task} onToggle={onToggle} />
+    <div className="task-container">
+      {userTaskData.map((task) => (
+        <CalendarCleaningTaskItem key={task.cleaning_task_id} userTask={task} onToggle={onToggle} />
       ))}
     </div>
   );

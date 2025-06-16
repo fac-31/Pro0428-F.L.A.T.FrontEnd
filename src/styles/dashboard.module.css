@@ -8,6 +8,7 @@
   flex-flow: row wrap;
   justify-content: space-around;
   padding: 30px;
+  gap: 40px;
 }
 
 :global(#logout-button) {
@@ -26,7 +27,7 @@
 
 .poster {
   width: 280px;
-  height: 400px;
+  height: 750px;
   background: linear-gradient(-150deg, transparent 1.5em, var(--lightbeige) 0);
   position: relative;
   align-self: center;

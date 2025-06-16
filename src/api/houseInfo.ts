@@ -1,4 +1,15 @@
-import { usersCleaningTask, CleaningTask, Bills, HouseInfo } from 'types/types';
+import {
+  usersCleaningTask,
+  CleaningTask,
+  CleaningTaskFormData,
+  Bills,
+  BillFormData,
+  ReviewFormData,
+  HouseInfo,
+  HouseRule,
+  HousePreferences,
+  HousePreferencesResponse,
+} from 'types/types';
 
 export const fetchCleaningTasks = async (): Promise<CleaningTask[]> => {
   const token = localStorage.getItem('token');
@@ -42,10 +53,14 @@ export const fetchBills = async (): Promise<Bills[]> => {
 };
 
 export const fetchHouseInfo = async (): Promise<HouseInfo> => {
+  const token = localStorage.getItem('token');
+  if (!token) throw new Error('No auth token found');
+
   const res = await fetch('/api/houses', {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
     },
   });
 
@@ -106,10 +121,79 @@ export const updateTaskStatus = async (taskId: string, taskComplete: boolean): P
   }
 };
 
-//export const fetchTestDbData = async () => {
-//  const response = await fetch('http://localhost:5000/api/test-db');
-//  if (!response.ok) {
-//    throw new Error('Failed to fetch test DB data');
-//  }
-//  return response.json();
-//};
+export const addCleaningTask = async (cleaningTaskData: CleaningTaskFormData): Promise<void> => {
+  const res = await fetch('http://localhost:5000/api/create-cleaning', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(cleaningTaskData),
+  });
+
+  if (!res.ok) {
+    const errorBody = await res.json();
+    throw new Error(errorBody.error || 'Failed to add new cleaning task.');
+  }
+};
+
+export const addBill = async (billData: BillFormData): Promise<void> => {
+  const token = localStorage.getItem('token');
+  if (!token) throw new Error('No auth token found');
+
+  const res = await fetch('http://localhost:5000/api/create-bill', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(billData),
+  });
+
+  if (!res.ok) {
+    const errorBody = await res.json();
+    throw new Error(errorBody.error || 'Failed to add new bill.');
+  }
+};
+
+export const addReview = async (reviewData: ReviewFormData): Promise<void> => {
+  const token = localStorage.getItem('token');
+  if (!token) throw new Error('No auth token found');
+
+  const res = await fetch('http://localhost:5000/contentedness/create-contentedness', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(reviewData),
+  });
+
+  if (!res.ok) {
+    const errorBody = await res.json();
+    throw new Error(errorBody.error || 'Failed to add new review.');
+  }
+};
+
+export const fetchHousePreferences = async (): Promise<HousePreferencesResponse> => {
+  const token = localStorage.getItem('token');
+  if (!token) throw new Error('No auth token found');
+
+  const res = await fetch('http://localhost:5000/api/houses/house-preferences', {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!res.ok) throw new Error('Failed to fetch house preferences');
+
+  const json = await res.json();
+
+  if (!json.success)
+    throw new Error('Failed to fetch house preferences: ' + (json.message || 'Unknown error'));
+
+  return {
+    data: json.data as HousePreferences,
+    rules: json.rules as HouseRule[],
+  };
+};
