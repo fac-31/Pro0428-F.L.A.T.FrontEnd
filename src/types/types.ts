@@ -47,17 +47,33 @@ export interface ReviewFormData {
   individual_survey_result: string;
 }
 
-interface PreferencesObject {
-  details: string;
-  summary: string;
-  features: string[];
+export interface BillFormData {
+  house_id: string;
+  bill_type: string;
+  bill_amount: string;
+  due_date: string;
+}
+
+export interface ReviewFormData {
+  house_id: string;
+  individual_survey_result: string;
+}
+
+export interface HouseRule {
+  title: string;
+  rule: string;
+}
+
+export interface HousePreferencesResponse {
+  data: HousePreferences;
+  rules: HouseRule[];
 }
 
 export interface HousePreferences {
   house_id: string;
   address: string;
   landlord_contact: Record<string, unknown> | null;
-  house_preferences: PreferencesObject | null;
+  house_preferences: object | null;
   created_at: string | null;
 }
 

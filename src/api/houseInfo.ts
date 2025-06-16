@@ -172,7 +172,7 @@ export const addReview = async (reviewData: ReviewFormData): Promise<void> => {
   }
 };
 
-export const fetchHousePreferences = async (): Promise<HousePreferences | null> => {
+export const fetchHousePreferences = async (): Promise<HousePreferencesResponse> => {
   const token = localStorage.getItem('token');
   if (!token) throw new Error('No auth token found');
 
@@ -190,5 +190,8 @@ export const fetchHousePreferences = async (): Promise<HousePreferences | null> 
   if (!json.success)
     throw new Error('Failed to fetch house preferences: ' + (json.message || 'Unknown error'));
 
-  return json.data as HousePreferences | null;
+  return {
+    data: json.data as HousePreferences,
+    rules: json.rules as HouseRule[],
+  };
 };
