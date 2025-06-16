@@ -1,4 +1,4 @@
-.login_container {
+.register_container {
   position: absolute;
   left: 50%;
   top: 50%;
@@ -14,7 +14,14 @@
   padding: 20px;
 }
 
-.sign_in_form {
+.form_title {
+  font-size: 40px;
+  font-weight: bold;
+  color: var(--darkbrown);
+  margin-top: 5px;
+}
+
+.register_form {
   display: flex;
   flex-flow: column nowrap;
   justify-content: space-around;
@@ -22,11 +29,12 @@
 }
 
 label {
-  font-size: 30px;
+  font-size: 25px;
   font-weight: bold;
   color: var(--darkbrown);
 }
 
+input[type='text'],
 input[type='email'],
 input[type='password'] {
   background-color: var(--lightbeige);
@@ -34,12 +42,12 @@ input[type='password'] {
   margin-bottom: 10px;
   font-family: 'Courier New', Courier, monospace;
   font-weight: bold;
-  font-size: 30px;
+  font-size: 25px;
   color: var(--darkbrown);
 }
 
-:global(#sign-in-button),
-:global(#create-account-button) {
+:global(#sign-up-button),
+:global(#login-button) {
   font-family: 'Courier New', Courier, monospace;
   font-size: 20px;
   font-weight: bold;
@@ -51,8 +59,8 @@ input[type='password'] {
   margin: 10px 0;
 }
 
-:global(#sign-in-button:active),
-:global(#create-account-button:active) {
+:global(#sign-up-button:active),
+:global(#login-button:active) {
   background-color: var(--darkbeige);
   border: 2px inset var(--darkbrown);
 }

@@ -1,18 +1,3 @@
-:root {
-  --lightmint: #d5ffe0;
-  --mediummint: #96c1a1;
-  --darkmint: #516958;
-  --lightrose: #f7aeae;
-  --mediumrose: #b57474;
-  --darkrose: #8f5d5d;
-  --lightbeige: #f7f2d7;
-  --mediumbeige: #dcd7ba;
-  --darkbeige: #a4a08b;
-  --cherry: #940522;
-  --lightcherry: #d63f5d;
-  --darkbrown: rgb(90, 56, 38);
-}
-
 .kitchen {
   width: 100%;
   background-image: url('kitchen-wallpaper.png');

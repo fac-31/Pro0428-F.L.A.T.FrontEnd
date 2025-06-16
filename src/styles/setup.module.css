@@ -1,4 +1,4 @@
-.login_container {
+.setup_container {
   position: absolute;
   left: 50%;
   top: 50%;
@@ -14,32 +14,21 @@
   padding: 20px;
 }
 
-.sign_in_form {
+.container_title {
+  font-size: 40px;
+  font-weight: bold;
+  color: var(--darkbrown);
+  margin-top: 5px;
+}
+
+.options_container {
   display: flex;
   flex-flow: column nowrap;
   justify-content: space-around;
   align-items: center;
 }
 
-label {
-  font-size: 30px;
-  font-weight: bold;
-  color: var(--darkbrown);
-}
-
-input[type='email'],
-input[type='password'] {
-  background-color: var(--lightbeige);
-  border: 2px inset var(--mediumbeige);
-  margin-bottom: 10px;
-  font-family: 'Courier New', Courier, monospace;
-  font-weight: bold;
-  font-size: 30px;
-  color: var(--darkbrown);
-}
-
-:global(#sign-in-button),
-:global(#create-account-button) {
+button {
   font-family: 'Courier New', Courier, monospace;
   font-size: 20px;
   font-weight: bold;
@@ -48,11 +37,33 @@ input[type='password'] {
   border: 2px outset var(--darkbeige);
   border-radius: 4px;
   box-shadow: 0px 0px 0px 1px var(--darkbrown);
-  margin: 10px 0;
+  margin: 10px;
 }
 
-:global(#sign-in-button:active),
-:global(#create-account-button:active) {
+button:active {
   background-color: var(--darkbeige);
   border: 2px inset var(--darkbrown);
+}
+
+.join_house_form {
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: space-around;
+  align-items: center;
+}
+
+label {
+  font-size: 25px;
+  font-weight: bold;
+  color: var(--darkbrown);
+}
+
+:global(#houseId) {
+  background-color: var(--lightbeige);
+  border: 2px inset var(--mediumbeige);
+  margin-bottom: 10px;
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: bold;
+  font-size: 25px;
+  color: var(--darkbrown);
 }

@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Container, Box, Typography, Button, TextField, Paper, Grid } from '@mui/material';
+// import { Container, Box, Typography, Button, TextField, Paper, Grid } from '@mui/material';
 import { AxiosError } from 'axios';
 import api from '../../api/axios';
+import styles from '../../styles/setup.module.css';
 
 const HouseSetup = () => {
   const navigate = useNavigate();
@@ -71,82 +72,57 @@ const HouseSetup = () => {
   };
 
   return (
-    <Container component="main" maxWidth="sm">
-      <Box
-        sx={{
-          marginTop: 8,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-        }}
-      >
-        <Paper elevation={3} sx={{ p: 4, width: '100%' }}>
-          <Typography component="h1" variant="h5" align="center" gutterBottom>
-            House Setup
-          </Typography>
-          {errorMsg && (
-            <Typography color="error" variant="body2" sx={{ mt: 1, textAlign: 'center' }}>
-              {errorMsg}
-            </Typography>
-          )}
+    <>
+      <div className="elevator-hand-rail">
+        <div className="hand-rail-fitting"></div>
+        <div className="hand-rail-fitting"></div>
+      </div>
+      <div className={styles.setup_container}>
+        <h1 className={styles.container_title}>HOUSE SETUP</h1>
+        {errorMsg && <h1>{errorMsg}</h1>}
 
+        <div>
           {!showJoinInput ? (
-            <Grid container spacing={2} sx={{ mt: 2 }}>
-              <Grid item xs={12}>
-                <Button
-                  fullWidth
-                  variant="contained"
-                  onClick={() => setShowJoinInput(true)}
-                  sx={{ mb: 2 }}
-                  disabled={loading}
-                >
-                  Join Existing House
-                </Button>
-              </Grid>
-              <Grid item xs={12}>
-                <Button fullWidth variant="outlined" onClick={handleCreateHouse} disabled={loading}>
-                  Create New House
-                </Button>
-              </Grid>
-            </Grid>
+            <div className={styles.options_container}>
+              <button
+                id="join-existing-house-button"
+                onClick={() => setShowJoinInput(true)}
+                disabled={loading}
+              >
+                JOIN EXISTING HOUSE
+              </button>
+              <button id="create-new-house-button" onClick={handleCreateHouse} disabled={loading}>
+                CREATE NEW HOUSE
+              </button>
+            </div>
           ) : (
-            <Box component="form" onSubmit={handleJoinHouse} sx={{ mt: 2 }}>
-              <TextField
-                margin="normal"
+            <form className={styles.join_house_form} onSubmit={handleJoinHouse}>
+              <label htmlFor="houseId" id="houseId-label">
+                HOUSE CODE (UUID)
+              </label>
+              <input
                 required
-                fullWidth
                 id="houseId"
-                label="House ID"
                 name="houseId"
                 value={houseCode}
                 onChange={(e) => setHouseCode(e.target.value)}
-                autoFocus
                 disabled={loading}
-                helperText="Enter the UUID of the house you want to join"
                 placeholder="e.g., 123e4567-e89b-12d3-a456-426614174000"
               />
-              <Grid container spacing={2} sx={{ mt: 1 }}>
-                <Grid item xs={6}>
-                  <Button
-                    fullWidth
-                    variant="outlined"
-                    onClick={() => setShowJoinInput(false)}
-                    disabled={loading}
-                  >
-                    Back
-                  </Button>
-                </Grid>
-                <Grid item xs={6}>
-                  <Button type="submit" fullWidth variant="contained" disabled={loading}>
-                    {loading ? 'Joining...' : 'Join House'}
-                  </Button>
-                </Grid>
-              </Grid>
-            </Box>
+
+              <div>
+                <button id="back-button" onClick={() => setShowJoinInput(false)} disabled={loading}>
+                  BACK
+                </button>
+                <button id="join-house-button" type="submit" disabled={loading}>
+                  {loading ? 'Joining...' : 'Join House'}
+                </button>
+              </div>
+            </form>
           )}
-        </Paper>
-      </Box>
-    </Container>
+        </div>
+      </div>
+    </>
   );
 };
 

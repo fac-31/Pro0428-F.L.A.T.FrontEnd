@@ -13,16 +13,16 @@ function App() {
   useEffect(() => {
     const body = document.body;
 
-    body.classList.remove('login-style', 'dashboard-style');
+    body.classList.remove('onboarding-style', 'dashboard-style');
 
-    if (location.pathname.startsWith('/login')) {
-      body.classList.add('login-style');
+    if (!location.pathname.startsWith('/house-dashboard')) {
+      body.classList.add('onboarding-style');
     } else {
       body.classList.add('dashboard-style');
     }
 
     return () => {
-      body.classList.remove('login-style', 'dashboard-style');
+      body.classList.remove('onboarding-style', 'dashboard-style');
     };
   }, [location.pathname]);
 

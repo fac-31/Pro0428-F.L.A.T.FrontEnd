@@ -1,3 +1,21 @@
+:root {
+  --lightmint: #d5ffe0;
+  --mediummint: #96c1a1;
+  --darkmint: #516958;
+  --lightrose: #f7aeae;
+  --mediumrose: #b57474;
+  --darkrose: #8f5d5d;
+  --lightbeige: #f7f2d7;
+  --mediumbeige: #dcd7ba;
+  --darkbeige: #a4a08b;
+  --cherry: #940522;
+  --lightcherry: #d63f5d;
+  --darkbrown: rgb(90, 56, 38);
+  --darkgold: #786822;
+  --mediumgold: #b3a152;
+  --lightgold: #e1d086;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -13,6 +31,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+  font-family: 'Courier New', Courier, monospace;
 }
 
 body.dashboard-style {
@@ -23,10 +42,50 @@ body.dashboard-style {
   font-family: 'Courier New', Courier, monospace;
 }
 
-body.login-style {
+body.onboarding-style {
   height: 100%;
   background-image: url('elevator-wallpaper.png');
   background-position: center;
   background-repeat: repeat-x;
   background-size: cover;
+}
+
+.elevator-hand-rail {
+  position: relative;
+  top: 65px;
+  width: 100%;
+  height: 40px;
+  background-image: linear-gradient(
+    var(--darkgold),
+    white,
+    var(--darkgold) 35%,
+    var(--darkgold) 50%,
+    var(--lightgold) 60%,
+    var(--lightgold) 70%,
+    var(--darkgold) 85%,
+    var(--mediumgold) 95%,
+    var(--darkgold) 99%
+  );
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.hand-rail-fitting {
+  width: 40px;
+  height: 50px;
+  background-image: linear-gradient(
+    var(--darkgold),
+    white,
+    var(--darkgold) 35%,
+    var(--darkgold) 50%,
+    var(--lightgold) 60%,
+    var(--lightgold) 70%,
+    var(--darkgold) 85%,
+    var(--mediumgold) 95%,
+    var(--darkgold) 99%
+  );
+  border-radius: 5px;
+  box-shadow: 0 0 0 1px var(--darkgold);
 }
