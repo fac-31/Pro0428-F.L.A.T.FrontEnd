@@ -48,6 +48,20 @@ html {
   gap: 40px;
 }
 
+#logout-button {
+  position: absolute;
+  left: 5%;
+  top: 5%;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 20px;
+  font-weight: bold;
+  color: var(--darkmint);
+  background-color: var(--lightmint);
+  border: 2px outset var(--mediummint);
+  border-radius: 4px;
+  box-shadow: 0px 0px 0px 1px var(--darkmint);
+}
+
 .poster {
   width: 280px;
   height: 750px;
