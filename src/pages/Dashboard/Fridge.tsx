@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import FridgeTop from './FridgeTopDoor';
 import FridgeBottom from './FridgeBigDoor';
-import { fetchHouseInfo, fetchBills } from '../../api/houseInfo';
-import { HouseInfo, Bills, CleaningTask } from '../../types/types';
+import { fetchBills, fetchReview } from '../../api/houseInfo';
+import { HouseInfo, Bills, CleaningTask, Review } from '../../types/types';
 import styles from '../../styles/dashboard.module.css';
 
 interface FridgeProps {
@@ -15,6 +15,7 @@ const Fridge: React.FC<FridgeProps> = ({ cleaningData, refreshCleaningTasks }) =
   const [activeSection, setActiveSection] = useState<'cleaning' | 'bills' | 'review' | null>(null);
   const [houseInfo, setHouseInfo] = useState<HouseInfo | null>(null);
   const [billsData, setBillsData] = useState<Bills[] | null>(null);
+  const [review, setReview] = useState<Review | null>(null);
   const [loading, setLoading] = useState(false);
 
   const handleSectionClick = async (section: 'cleaning' | 'bills' | 'review') => {
@@ -30,12 +31,13 @@ const Fridge: React.FC<FridgeProps> = ({ cleaningData, refreshCleaningTasks }) =
         setBillsData(bills);
         setHouseInfo(null);
       } else {
-        const data = await fetchHouseInfo();
-        setHouseInfo(data);
+        const data = await fetchReview();
+        console.log('working');
+        setReview(data);
       }
     } catch (error) {
       console.error('Failed to fetch data:', error);
-      setHouseInfo(null);
+      setReview(null);
     } finally {
       setLoading(false);
     }
@@ -73,6 +75,7 @@ const Fridge: React.FC<FridgeProps> = ({ cleaningData, refreshCleaningTasks }) =
         data={houseInfo}
         cleaningData={cleaningData}
         billsData={billsData}
+        review={review}
         onNewTaskAdded={handleNewTaskAdded}
         loading={loading}
       />

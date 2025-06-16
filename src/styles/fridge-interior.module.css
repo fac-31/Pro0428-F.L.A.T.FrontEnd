@@ -213,6 +213,8 @@ label {
   border-radius: 6px;
   padding: 6px;
   box-shadow: 0 0 0 1px var(--darkbrown);
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 .appraisal > h2,
@@ -261,13 +263,15 @@ label {
 }
 
 .thermometer_container {
-  width: 100%;
-  height: 42.6%;
+  width: 15%;
   padding: 0;
+  height: 56.1%;
+  position: absolute;
+  top: 6%;
+  right: 15%;
   grid-row: 1 / span 4;
   grid-column: 2 / span 1;
-  position: relative;
-  margin-top: 50%;
+  margin-right: -35px;
 }
 
 .thermometer_top {
@@ -285,10 +289,9 @@ label {
 }
 
 .thermometer {
-  display: block;
-  width: 100%;
   position: absolute;
   top: 0;
+  width: 100%;
 }
 
 .mercury {
@@ -302,15 +305,15 @@ label {
 }
 
 .emoji_container {
-  width: 1.32em;
-  height: 1.32em;
+  width: 34px;
+  height: 34px;
   border-radius: 100%;
   background-color: var(--cherry);
   text-align: center;
-  line-height: 2.1rem;
-  font-size: 1.35rem;
+  line-height: 38px;
+  font-size: 24px;
   position: absolute;
   left: 50%;
-  bottom: -10%;
-  transform: translateX(-50%) rotate(1deg);
+  bottom: 2%;
+  transform: translateX(-48%);
 }
