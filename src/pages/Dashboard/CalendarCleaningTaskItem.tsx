@@ -2,22 +2,22 @@ import React from 'react';
 import { usersCleaningTask } from '../../types/types.ts';
 
 interface Props {
-  task: usersCleaningTask;
+  userTask: usersCleaningTask;
   onToggle: (taskId: string, currentStatus: boolean) => void;
 }
 
-const CleaningTaskItem: React.FC<Props> = ({ task, onToggle }) => (
+const CalendarCleaningTaskItem: React.FC<Props> = ({ userTask, onToggle }) => (
   <div className="task">
-    <label className="task-name" htmlFor={task.cleaning_task_id}>
-      {task.description}
+    <label className="task-name" htmlFor={userTask.cleaning_task_id}>
+      {userTask.description}
     </label>
     <input
       type="checkbox"
-      id={task.cleaning_task_id}
-      checked={task.task_complete ?? false}
-      onChange={() => onToggle(task.cleaning_task_id, task.task_complete ?? false)}
+      id={userTask.cleaning_task_id}
+      checked={userTask.task_complete ?? false}
+      onChange={() => onToggle(userTask.cleaning_task_id, userTask.task_complete ?? false)}
     />
   </div>
 );
 
-export default CleaningTaskItem;
+export default CalendarCleaningTaskItem;

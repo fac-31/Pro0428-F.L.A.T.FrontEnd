@@ -1,6 +1,8 @@
 import React, { useState, ChangeEvent, FormEvent } from 'react';
 import { CircularProgress } from '@mui/material';
 import { HouseInfo, Bills, CleaningTask } from '../../types/types';
+import { addCleaningTask, addBill } from '../../api/houseInfo';
+import { AxiosError } from 'axios';
 import '../../styles/fridge-interior.css';
 
 interface FridgeBottomProps {
@@ -10,18 +12,19 @@ interface FridgeBottomProps {
   data: HouseInfo | null;
   cleaningData?: CleaningTask[] | null;
   billsData?: Bills[] | null;
+  onNewTaskAdded: (section: string) => Promise<void>;
   loading: boolean;
 }
 
 interface taskFormData {
-  type: string;
+  description: string;
   assigned_to_user: string;
   due_date: string;
 }
 
 interface billFormData {
-  type: string;
-  amount: string;
+  bill_type: string;
+  bill_amount: string;
   due_date: string;
 }
 
@@ -32,17 +35,18 @@ const FridgeBottom: React.FC<FridgeBottomProps> = ({
   data,
   cleaningData,
   billsData,
+  onNewTaskAdded,
   loading,
 }) => {
   const [taskFormData, setTaskFormData] = useState<taskFormData>({
-    type: '',
+    description: '',
     assigned_to_user: '',
     due_date: '',
   });
 
   const [billFormData, setBillFormData] = useState<billFormData>({
-    type: '',
-    amount: '',
+    bill_type: '',
+    bill_amount: '',
     due_date: '',
   });
 
@@ -58,6 +62,44 @@ const FridgeBottom: React.FC<FridgeBottomProps> = ({
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+
+    try {
+      if (activeSection === 'cleaning') {
+        const dataToSend = {
+          assigned_to_user: taskFormData.assigned_to_user,
+          house_id: localStorage.getItem('house_id'),
+          description: taskFormData.description,
+          due_date: taskFormData.due_date,
+        };
+        await addCleaningTask(dataToSend);
+        onNewTaskAdded(activeSection);
+        setTaskFormData({
+          description: '',
+          assigned_to_user: '',
+          due_date: '',
+        });
+      } else if (activeSection === 'bills') {
+        const dataToSend = {
+          house_id: localStorage.getItem('house_id'),
+          bill_type: billFormData.bill_type,
+          bill_amount: billFormData.bill_amount,
+          due_date: billFormData.due_date,
+        };
+        await addBill(dataToSend);
+        onNewTaskAdded(activeSection);
+        setBillFormData({
+          bill_type: '',
+          bill_amount: '',
+          due_date: '',
+        });
+      }
+    } catch (error: unknown) {
+      if (error instanceof AxiosError) {
+        console.error('Task/bill creation error:', error);
+      } else {
+        console.log('An unexpected error occurred.');
+      }
+    }
   };
 
   const renderContent = () => {
@@ -104,8 +146,8 @@ const FridgeBottom: React.FC<FridgeBottomProps> = ({
               <input
                 id="task-name"
                 type="text"
-                name="type"
-                value={taskFormData.type}
+                name="description"
+                value={taskFormData.description}
                 onChange={handleChange}
                 required
               />
@@ -175,8 +217,8 @@ const FridgeBottom: React.FC<FridgeBottomProps> = ({
               <input
                 id="bill-type"
                 type="text"
-                name="type"
-                value={billFormData.type}
+                name="bill_type"
+                value={billFormData.bill_type}
                 onChange={handleChange}
                 required
               />
@@ -186,8 +228,8 @@ const FridgeBottom: React.FC<FridgeBottomProps> = ({
               <input
                 id="bill-amount"
                 type="text"
-                name="amount"
-                value={billFormData.amount}
+                name="bill_amount"
+                value={billFormData.bill_amount}
                 onChange={handleChange}
                 required
               />
