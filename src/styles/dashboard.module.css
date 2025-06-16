@@ -219,62 +219,6 @@
   position: relative;
 }
 
-.thermometer_container {
-<<<<<<< HEAD
-  width: 3px;
-=======
-  width: 15%;
->>>>>>> main
-  padding: 0;
-  height: 20%;
-  position: absolute;
-  top: 6%;
-  right: 15%;
-}
-
-.thermometer_top {
-  width: 100%;
-  height: 9%;
-  background-color: var(--mediummint);
-  border-radius: 50% 50% 0 0;
-  box-shadow: 0 0 0 1px var(--darkmint);
-}
-
-.thermometer_bottom {
-  width: 100%;
-  height: 91%;
-  box-shadow: 0 0 0 1px var(--darkmint);
-}
-
-.thermometer {
-  position: absolute;
-  top: 0;
-}
-
-.mercury {
-  width: 5%;
-  height: 50%;
-  background-color: var(--cherry);
-  position: absolute;
-  left: 50%;
-  bottom: 20%;
-  transform: translateX(-15%) rotate(0.25deg);
-}
-
-.emoji_container {
-  width: 34px;
-  height: 34px;
-  border-radius: 100%;
-  background-color: var(--cherry);
-  text-align: center;
-  line-height: 38px;
-  font-size: 24px;
-  position: absolute;
-  left: 50%;
-  bottom: 0;
-  transform: translateX(-48%);
-}
-
 .calendar_container {
   width: 250px;
   height: auto;
