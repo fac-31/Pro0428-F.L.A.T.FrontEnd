@@ -14,7 +14,7 @@ const CalendarCleaningTaskList: React.FC<Props> = ({ userTaskData, onToggle, loa
   if (!userTaskData || userTaskData.length === 0) return <p>No cleaning tasks assigned.</p>;
 
   return (
-    <div className="task-container">
+    <div className={styles.task_container}>
       {userTaskData.map((task) => (
         <CalendarCleaningTaskItem key={task.cleaning_task_id} userTask={task} onToggle={onToggle} />
       ))}

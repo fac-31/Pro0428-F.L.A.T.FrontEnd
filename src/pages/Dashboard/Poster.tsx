@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { fetchHousePreferences } from '../../api/houseInfo';
 import { HouseRule, HousePreferencesResponse } from '../../types/types';
-
 import classNames from 'classnames';
 import styles from '../../styles/dashboard.module.css';
 
@@ -33,18 +32,24 @@ const Poster = () => {
 
   if (loading) return <p>Loading house rules...</p>;
 
-  if (error) return <p className="error-text">{error}</p>;
+  if (error) return <p className={styles.error_text}>{error}</p>;
 
   if (rules.length === 0) return <p>No house rules available.</p>;
 
   return (
-    <div className="poster">
-      <div className="pin top-left"></div>
-      <div className="pin bottom-left"></div>
-      <div className="pin bottom-right"></div>
-      <div className="text-container">
-        <h1 className="poster-title">HOUSE VIBES</h1>
-        <p className="house-vibes-paragraph">This is how we want our house to operate:</p>
+    <div className={styles.poster}>
+      <div className={classNames(styles.pin, styles.top_left)}></div>
+      <div className={classNames(styles.pin, styles.bottom_left)}></div>
+      <div className={classNames(styles.pin, styles.bottom_right)}></div>
+      <div className={styles.text_container}>
+        <h1 className={styles.poster_title}>HOUSE VIBES</h1>
+        <ul className={styles.house_rules_list}>
+          {rules.map((rule, idx) => (
+            <li key={idx}>
+              <strong>{rule.title}:</strong> {rule.rule}
+            </li>
+          ))}
+        </ul>
       </div>
     </div>
   );

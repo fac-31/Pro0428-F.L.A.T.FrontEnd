@@ -62,6 +62,7 @@ const Calendar: React.FC<CalendarProps> = ({ userTaskData, updateTasks }) => {
         individual_survey_result: reviewFormData,
       };
       await addReview(dataToSend);
+      console.log('hello');
       setReviewFormData('');
     } catch (error: unknown) {
       if (error instanceof AxiosError) {
@@ -91,13 +92,23 @@ const Calendar: React.FC<CalendarProps> = ({ userTaskData, updateTasks }) => {
           }}
         ></div>
 
-        <div className="information">
-          <h1 className="heading">My Cleaning Tasks:</h1>
-          <CalendarCleaningTaskList tasks={tasks} loading={loading} onToggle={handleToggle} />
+        <div className={styles.information}>
+          <h1 className={styles.heading}>My Cleaning Tasks:</h1>
+          <CalendarCleaningTaskList
+            userTaskData={userTaskData}
+            loading={loading}
+            onToggle={handleToggle}
+          />
 
-          <h1 className="heading">Review Submission:</h1>
-          <form className="review-form">
-            <textarea id="review" name="review" rows={4}></textarea>
+          <h1 className={styles.heading}>Review Submission:</h1>
+          <form className={styles.review_form} onSubmit={handleSubmit}>
+            <textarea
+              id="review"
+              name="review"
+              rows={4}
+              value={reviewFormData}
+              onChange={(e) => setReviewFormData(e.target.value)}
+            ></textarea>
             <input id="submit-review" type="submit" value="SUBMIT" />
           </form>
         </div>
