@@ -62,6 +62,7 @@ const Calendar: React.FC<CalendarProps> = ({ userTaskData, updateTasks }) => {
         individual_survey_result: reviewFormData,
       };
       await addReview(dataToSend);
+      console.log('hello');
       setReviewFormData('');
     } catch (error: unknown) {
       if (error instanceof AxiosError) {
