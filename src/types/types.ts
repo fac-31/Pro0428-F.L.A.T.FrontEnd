@@ -42,6 +42,11 @@ export interface BillFormData {
   due_date: string;
 }
 
+export interface ReviewFormData {
+  house_id: string;
+  individual_survey_result: string;
+}
+
 interface PreferencesObject {
   details: string;
   summary: string;

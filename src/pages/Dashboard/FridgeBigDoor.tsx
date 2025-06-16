@@ -12,6 +12,7 @@ interface FridgeBottomProps {
   data: HouseInfo | null;
   cleaningData?: CleaningTask[] | null;
   billsData?: Bills[] | null;
+  onNewTaskAdded: (section: string) => Promise<void>;
   loading: boolean;
 }
 
@@ -34,6 +35,7 @@ const FridgeBottom: React.FC<FridgeBottomProps> = ({
   data,
   cleaningData,
   billsData,
+  onNewTaskAdded,
   loading,
 }) => {
   const [taskFormData, setTaskFormData] = useState<taskFormData>({
@@ -70,6 +72,12 @@ const FridgeBottom: React.FC<FridgeBottomProps> = ({
           due_date: taskFormData.due_date,
         };
         await addCleaningTask(dataToSend);
+        onNewTaskAdded(activeSection);
+        setTaskFormData({
+          description: '',
+          assigned_to_user: '',
+          due_date: '',
+        });
       } else if (activeSection === 'bills') {
         const dataToSend = {
           house_id: localStorage.getItem('house_id'),
@@ -78,6 +86,12 @@ const FridgeBottom: React.FC<FridgeBottomProps> = ({
           due_date: billFormData.due_date,
         };
         await addBill(dataToSend);
+        onNewTaskAdded(activeSection);
+        setBillFormData({
+          bill_type: '',
+          bill_amount: '',
+          due_date: '',
+        });
       }
     } catch (error: unknown) {
       if (error instanceof AxiosError) {
@@ -132,7 +146,7 @@ const FridgeBottom: React.FC<FridgeBottomProps> = ({
               <input
                 id="task-name"
                 type="text"
-                name="type"
+                name="description"
                 value={taskFormData.description}
                 onChange={handleChange}
                 required
@@ -203,7 +217,7 @@ const FridgeBottom: React.FC<FridgeBottomProps> = ({
               <input
                 id="bill-type"
                 type="text"
-                name="type"
+                name="bill_type"
                 value={billFormData.bill_type}
                 onChange={handleChange}
                 required
@@ -214,7 +228,7 @@ const FridgeBottom: React.FC<FridgeBottomProps> = ({
               <input
                 id="bill-amount"
                 type="text"
-                name="amount"
+                name="bill_amount"
                 value={billFormData.bill_amount}
                 onChange={handleChange}
                 required

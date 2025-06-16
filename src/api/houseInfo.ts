@@ -4,6 +4,7 @@ import {
   CleaningTaskFormData,
   Bills,
   BillFormData,
+  ReviewFormData,
   HouseInfo,
   HousePreferences,
 } from 'types/types';
@@ -50,10 +51,14 @@ export const fetchBills = async (): Promise<Bills[]> => {
 };
 
 export const fetchHouseInfo = async (): Promise<HouseInfo> => {
+  const token = localStorage.getItem('token');
+  if (!token) throw new Error('No auth token found');
+
   const res = await fetch('/api/houses', {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
     },
   });
 
@@ -145,6 +150,25 @@ export const addBill = async (billData: BillFormData): Promise<void> => {
   if (!res.ok) {
     const errorBody = await res.json();
     throw new Error(errorBody.error || 'Failed to add new bill.');
+  }
+};
+
+export const addReview = async (reviewData: ReviewFormData): Promise<void> => {
+  const token = localStorage.getItem('token');
+  if (!token) throw new Error('No auth token found');
+
+  const res = await fetch('http://localhost:5000/contentedness/create-contentedness', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(reviewData),
+  });
+
+  if (!res.ok) {
+    const errorBody = await res.json();
+    throw new Error(errorBody.error || 'Failed to add new review.');
   }
 };
 
