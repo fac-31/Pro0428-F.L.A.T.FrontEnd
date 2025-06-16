@@ -1,6 +1,6 @@
 import React, { useState, ChangeEvent, FormEvent } from 'react';
 import { CircularProgress } from '@mui/material';
-import { HouseInfo, Bills, CleaningTask } from '../../types/types';
+import { HouseInfo, Bills, CleaningTask, Review } from '../../types/types';
 import { addCleaningTask, addBill } from '../../api/houseInfo';
 import { AxiosError } from 'axios';
 import classNames from 'classnames';
@@ -13,6 +13,7 @@ interface FridgeBottomProps {
   data: HouseInfo | null;
   cleaningData?: CleaningTask[] | null;
   billsData?: Bills[] | null;
+  review?: Review | null;
   onNewTaskAdded: (section: string) => Promise<void>;
   loading: boolean;
 }
@@ -33,9 +34,9 @@ const FridgeBottom: React.FC<FridgeBottomProps> = ({
   isOpen,
   onToggle,
   activeSection,
-  data,
   cleaningData,
   billsData,
+  review,
   onNewTaskAdded,
   loading,
 }) => {
@@ -253,9 +254,12 @@ const FridgeBottom: React.FC<FridgeBottomProps> = ({
         );
 
       case 'review':
-        if (!data) {
+        if (!review) {
           return <h1>No house info data found.</h1>;
         }
+
+        console.log(review);
+
         return (
           <>
             <h1 id="review-title" className={styles.section_title}>
@@ -264,20 +268,17 @@ const FridgeBottom: React.FC<FridgeBottomProps> = ({
 
             <div id="working" className={styles.appraisal}>
               <h2>WHAT'S WORKING?</h2>
-              <p>
-                This, that and the other. This, that and the other. This, that and the other. This,
-                that and the other.
-              </p>
+              <p>{review[0].individual_survey_result}</p>
             </div>
 
             <div id="not-working" className={styles.appraisal}>
               <h2>WHAT'S NOT WORKING?</h2>
-              <p>This, that and the other.</p>
+              <p>{review[0].individual_survey_result}</p>
             </div>
 
             <div className={styles.happiness}>
               <h2>HAPPINESS UPDATE:</h2>
-              <p>Overall, we're super happy!</p>
+              <p>{review[0].individual_survey_result}</p>
             </div>
 
             <div className={styles.thermometer_container}>

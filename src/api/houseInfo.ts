@@ -5,6 +5,7 @@ import {
   Bills,
   BillFormData,
   ReviewFormData,
+  Review,
   HouseInfo,
   HouseRule,
   HousePreferences,
@@ -196,4 +197,25 @@ export const fetchHousePreferences = async (): Promise<HousePreferencesResponse>
     data: json.data as HousePreferences,
     rules: json.rules as HouseRule[],
   };
+};
+
+export const fetchReview = async (): Promise<Review> => {
+  const token = localStorage.getItem('token');
+  if (!token) throw new Error('No auth token found');
+
+  const res = await fetch('http://localhost:5000/contentedness/fetch-contentedness', {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!res.ok) throw new Error('Failed to fetch review data');
+
+  const json = await res.json();
+
+  if (!json.success)
+    throw new Error('Failed to fetch review data: ' + (json.message || 'Unknown error'));
+
+  return json.data as Review;
 };

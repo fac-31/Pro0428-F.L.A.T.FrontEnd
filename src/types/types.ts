@@ -59,6 +59,14 @@ export interface ReviewFormData {
   individual_survey_result: string;
 }
 
+export interface Review {
+  weekly_vibes_id: string;
+  user_id: string;
+  house_id: string;
+  individual_survey_result: string;
+  date_of_survey: string;
+}
+
 export interface HouseRule {
   title: string;
   rule: string;
