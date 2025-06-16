@@ -1,4 +1,12 @@
-import { usersCleaningTask, CleaningTask, Bills, HouseInfo, HousePreferences } from 'types/types';
+import {
+  usersCleaningTask,
+  CleaningTask,
+  Bills,
+  HouseInfo,
+  HousePreferencesResponse,
+  HouseRule,
+  HousePreferences,
+} from 'types/types';
 
 export const fetchCleaningTasks = async (): Promise<CleaningTask[]> => {
   const token = localStorage.getItem('token');
@@ -114,7 +122,7 @@ export const updateTaskStatus = async (taskId: string, taskComplete: boolean): P
 //  return response.json();
 //};
 
-export const fetchHousePreferences = async (): Promise<HousePreferences | null> => {
+export const fetchHousePreferences = async (): Promise<HousePreferencesResponse> => {
   const token = localStorage.getItem('token');
   if (!token) throw new Error('No auth token found');
 
@@ -132,5 +140,8 @@ export const fetchHousePreferences = async (): Promise<HousePreferences | null> 
   if (!json.success)
     throw new Error('Failed to fetch house preferences: ' + (json.message || 'Unknown error'));
 
-  return json.data as HousePreferences | null;
+  return {
+    data: json.data as HousePreferences,
+    rules: json.rules as HouseRule[],
+  };
 };
