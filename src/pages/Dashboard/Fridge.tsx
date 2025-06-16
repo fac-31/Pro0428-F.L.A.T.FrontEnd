@@ -3,6 +3,7 @@ import FridgeTop from './FridgeTopDoor';
 import FridgeBottom from './FridgeBigDoor';
 import { fetchHouseInfo, fetchBills } from '../../api/houseInfo';
 import { HouseInfo, Bills, CleaningTask } from '../../types/types';
+import styles from '../../styles/dashboard.module.css';
 
 interface FridgeProps {
   cleaningData: CleaningTask[] | null;
@@ -63,7 +64,7 @@ const Fridge: React.FC<FridgeProps> = ({ cleaningData, refreshCleaningTasks }) =
   };
 
   return (
-    <div className="fridge-container">
+    <div className={styles.fridge_container}>
       <FridgeTop onSectionClick={handleSectionClick} />
       <FridgeBottom
         isOpen={isOpen}

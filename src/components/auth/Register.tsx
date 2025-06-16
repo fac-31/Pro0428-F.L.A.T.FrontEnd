@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { useNavigate, Link as RouterLink } from 'react-router-dom';
-import { Container, Box, Typography, TextField, Button, Link, Paper } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import { AxiosError } from 'axios';
 import api from '../../api/axios';
+import styles from '../../styles/register.module.css';
 
 const Register = () => {
   const navigate = useNavigate();
@@ -94,90 +94,76 @@ const Register = () => {
     });
   };
 
+  const handleBackToLoginButtonClick = () => {
+    navigate('/login');
+  };
+
   return (
-    <Container component="main" maxWidth="xs">
-      <Box
-        sx={{
-          marginTop: 8,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-        }}
-      >
-        <Paper elevation={3} sx={{ p: 4, width: '100%' }}>
-          <Typography component="h1" variant="h5" align="center" gutterBottom>
-            Create Account
-          </Typography>
-          {errorMsg && (
-            <Typography color="error" variant="body2" sx={{ mt: 1, textAlign: 'center' }}>
-              {errorMsg}
-            </Typography>
-          )}
-          <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="name"
-              label="Full Name"
-              name="name"
-              autoComplete="name"
-              autoFocus
-              value={formData.name}
-              onChange={handleChange}
-            />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="email"
-              label="Email Address"
-              name="email"
-              autoComplete="email"
-              value={formData.email}
-              onChange={handleChange}
-            />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Password"
-              type="password"
-              id="password"
-              autoComplete="new-password"
-              value={formData.password}
-              onChange={handleChange}
-            />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="confirmPassword"
-              label="Confirm Password"
-              type="password"
-              id="confirmPassword"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-            />
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-              disabled={loading}
-            >
-              {loading ? 'Creating Account...' : 'Sign Up'}
-            </Button>
-            <Box sx={{ textAlign: 'center' }}>
-              <Link component={RouterLink} to="/login" variant="body2">
-                {'Already have an account? Sign In'}
-              </Link>
-            </Box>
-          </Box>
-        </Paper>
-      </Box>
-    </Container>
+    <>
+      <div className="elevator-hand-rail">
+        <div className="hand-rail-fitting"></div>
+        <div className="hand-rail-fitting"></div>
+      </div>
+      <div className={styles.register_container}>
+        <h1 className={styles.form_title}>CREATE ACCOUNT</h1>
+        <form className={styles.register_form} onSubmit={handleSubmit}>
+          {errorMsg && <h1>{errorMsg}</h1>}
+          <label id="name-input-label" htmlFor="name-input">
+            FULL NAME
+          </label>
+          <input
+            id="name-input"
+            name="name"
+            type="text"
+            required
+            value={formData.name}
+            onChange={handleChange}
+          />
+          <label id="email-input-label" htmlFor="email-input">
+            EMAIL ADDRESS
+          </label>
+          <input
+            id="email-input"
+            name="email"
+            type="email"
+            required
+            value={formData.email}
+            onChange={handleChange}
+          />
+          <label id="password-input-label" htmlFor="password-input">
+            PASSWORD
+          </label>
+          <input
+            id="password-input"
+            name="password"
+            type="password"
+            required
+            value={formData.password}
+            onChange={handleChange}
+          />
+
+          <label id="confirm-password-input-label" htmlFor="confirm-password-input">
+            CONFIRM PASSWORD
+          </label>
+          <input
+            id="-confirm-password-input"
+            name="confirmPassword"
+            type="password"
+            required
+            value={formData.confirmPassword}
+            onChange={handleChange}
+          />
+          <button id="sign-up-button" type="submit" disabled={loading}>
+            {loading ? 'CREATING ACCOUNT...' : 'SIGN UP'}
+          </button>
+        </form>
+        <div>
+          <button id="login-button" onClick={handleBackToLoginButtonClick}>
+            ALREADY HAVE AN ACCOUNT? SIGN IN!
+          </button>
+        </div>
+      </div>
+    </>
   );
 };
 

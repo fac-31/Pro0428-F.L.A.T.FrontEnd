@@ -4,6 +4,7 @@ import Calendar from './Calendar';
 import Fridge from './Fridge';
 import Poster from './Poster';
 import { logout } from '../../components/auth/auth';
+import styles from '../../styles/dashboard.module.css';
 import { fetchCleaningTasks, fetchSingleUserTask, updateTaskStatus } from '../../api/houseInfo';
 import { CleaningTask, usersCleaningTask } from '../../types/types';
 
@@ -39,7 +40,7 @@ const HouseDashboard = () => {
       <button id="logout-button" onClick={handleLogout}>
         LOGOUT
       </button>
-      <div className="kitchen">
+      <div className={styles.kitchen}>
         <Poster />
         <Fridge cleaningData={cleaningData} refreshCleaningTasks={refreshCleaningTasks} />
         <Calendar userTaskData={userTaskData} updateTasks={updateTasks} />

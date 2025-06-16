@@ -3,6 +3,8 @@ import { fetchSingleUserTask, addReview } from '../../api/houseInfo.ts';
 import CalendarCleaningTaskList from './CalendarCleaningTaskList.tsx';
 import { AxiosError } from 'axios';
 import { usersCleaningTask } from '../../types/types.ts';
+import classNames from 'classnames';
+import styles from '../../styles/dashboard.module.css';
 
 interface CalendarProps {
   userTaskData: usersCleaningTask[] | null;
@@ -60,6 +62,7 @@ const Calendar: React.FC<CalendarProps> = ({ userTaskData, updateTasks }) => {
         individual_survey_result: reviewFormData,
       };
       await addReview(dataToSend);
+      console.log('hello');
       setReviewFormData('');
     } catch (error: unknown) {
       if (error instanceof AxiosError) {
@@ -71,41 +74,40 @@ const Calendar: React.FC<CalendarProps> = ({ userTaskData, updateTasks }) => {
   };
 
   return (
-    <div className="calendar-container">
-      <div className="string-left" />
-      <div className="string-right" />
-      <div className="pin calendar-pin" />
-      <div className="calendar">
-        <div className="date-container">
-          <div className="date-display">{days[today.getDay()]}</div>
-          <div className="date-display">{today.getDate()}</div>
-          <div className="date-display">{months[today.getMonth()]}</div>
+    <div className={styles.calendar_container}>
+      <div className={styles.string_left} />
+      <div className={styles.string_right} />
+      <div className={classNames(styles.pin, styles.calendar_pin)} />
+      <div className={styles.calendar}>
+        <div className={styles.date_container}>
+          <div className={styles.date_display}>{days[today.getDay()]}</div>
+          <div className={styles.date_display}>{today.getDate()}</div>
+          <div className={styles.date_display}>{months[today.getMonth()]}</div>
         </div>
 
         <div
-          className="image-container"
+          className={styles.image_container}
           style={{
             backgroundImage: `url(/calendar_photos/${months[today.getMonth()].toLowerCase()}.png)`,
           }}
         ></div>
 
-        <div className="information">
-          <h1 className="heading">My Cleaning Tasks:</h1>
+        <div className={styles.information}>
+          <h1 className={styles.heading}>My Cleaning Tasks:</h1>
           <CalendarCleaningTaskList
             userTaskData={userTaskData}
             loading={loading}
             onToggle={handleToggle}
           />
 
-          <h1 className="heading">Review Submission:</h1>
-          <form className="review-form" onSubmit={handleSubmit}>
+          <h1 className={styles.heading}>Review Submission:</h1>
+          <form className={styles.review_form} onSubmit={handleSubmit}>
             <textarea
               id="review"
               name="review"
               rows={4}
               value={reviewFormData}
               onChange={(e) => setReviewFormData(e.target.value)}
-              required
             ></textarea>
             <input id="submit-review" type="submit" value="SUBMIT" />
           </form>
