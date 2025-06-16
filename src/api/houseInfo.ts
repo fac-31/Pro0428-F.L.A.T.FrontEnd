@@ -6,7 +6,9 @@ import {
   BillFormData,
   ReviewFormData,
   HouseInfo,
+  HouseRule,
   HousePreferences,
+  HousePreferencesResponse,
 } from 'types/types';
 
 export const fetchCleaningTasks = async (): Promise<CleaningTask[]> => {
