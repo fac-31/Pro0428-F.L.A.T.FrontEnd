@@ -3,7 +3,8 @@ import { CircularProgress } from '@mui/material';
 import { HouseInfo, Bills, CleaningTask } from '../../types/types';
 import { addCleaningTask, addBill } from '../../api/houseInfo';
 import { AxiosError } from 'axios';
-import '../../styles/fridge-interior.css';
+import classNames from 'classnames';
+import styles from '../../styles/fridge-interior.module.css';
 
 interface FridgeBottomProps {
   isOpen: boolean;
@@ -114,10 +115,10 @@ const FridgeBottom: React.FC<FridgeBottomProps> = ({
         }
         return (
           <>
-            <h1 className="section-title">Active Cleaning Tasks:</h1>
+            <h1 className={styles.section_title}>Active Cleaning Tasks:</h1>
 
-            <div className="table-container">
-              <table className="task-table">
+            <div className={styles.table_container}>
+              <table className={styles.task_table}>
                 <thead>
                   <tr>
                     <th>TASK</th>
@@ -132,14 +133,16 @@ const FridgeBottom: React.FC<FridgeBottomProps> = ({
                       <td>{task.description}</td>
                       <td>{task.assigned_to_user}</td>
                       <td>{new Date(task.due_date).toLocaleDateString()}</td>
-                      <td className="task-complete-column">{task.task_complete ? '✓' : '✕'}</td>
+                      <td className={styles.task_complete_column}>
+                        {task.task_complete ? '✓' : '✕'}
+                      </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
 
-            <form className="add-task-form" onSubmit={handleSubmit}>
+            <form className={styles.add_task_form} onSubmit={handleSubmit}>
               <label id="task-name-label" htmlFor="task-name">
                 TASK
               </label>
@@ -183,10 +186,10 @@ const FridgeBottom: React.FC<FridgeBottomProps> = ({
         }
         return (
           <>
-            <h1 className="section-title">Active Bills:</h1>
+            <h1 className={styles.section_title}>Active Bills:</h1>
 
-            <div className="table-container">
-              <table className="task-table">
+            <div className={styles.table_container}>
+              <table className={styles.task_table}>
                 <thead>
                   <tr>
                     <th>BILL</th>
@@ -203,14 +206,14 @@ const FridgeBottom: React.FC<FridgeBottomProps> = ({
                       <td>
                         {bill.due_date ? new Date(bill.due_date).toLocaleDateString() : 'N/A'}
                       </td>
-                      <td className="task-complete-column">{bill.paid ? '✓' : '✕'}</td>
+                      <td className={styles.task_complete_column}>{bill.paid ? '✓' : '✕'}</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
 
-            <form className="add-task-form" onSubmit={handleSubmit}>
+            <form className={styles.add_task_form} onSubmit={handleSubmit}>
               <label id="bill-type-label" htmlFor="task-type">
                 BILL
               </label>
@@ -255,11 +258,11 @@ const FridgeBottom: React.FC<FridgeBottomProps> = ({
         }
         return (
           <>
-            <h1 id="review-title" className="section-title">
+            <h1 id="review-title" className={styles.section_title}>
               LAST WEEK'S REVIEW:
             </h1>
 
-            <div id="working" className="appraisal">
+            <div id="working" className={styles.appraisal}>
               <h2>WHAT'S WORKING?</h2>
               <p>
                 This, that and the other. This, that and the other. This, that and the other. This,
@@ -267,22 +270,22 @@ const FridgeBottom: React.FC<FridgeBottomProps> = ({
               </p>
             </div>
 
-            <div id="not-working" className="appraisal">
+            <div id="not-working" className={styles.appraisal}>
               <h2>WHAT'S NOT WORKING?</h2>
               <p>This, that and the other.</p>
             </div>
 
-            <div className="happiness">
+            <div className={styles.happiness}>
               <h2>HAPPINESS UPDATE:</h2>
               <p>Overall, we're super happy!</p>
             </div>
 
-            <div className="thermometer-container">
-              <div className="thermometer-top"></div>
-              <div className="thermometer-bottom"></div>
-              <img className="thermometer" src="thermometer2.png" alt="thermometer" />
-              <div className="mercury"></div>
-              <p className="emoji-container">&#128513;</p>
+            <div className={styles.thermometer_container}>
+              <div className={styles.thermometer_top}></div>
+              <div className={styles.thermometer_bottom}></div>
+              <img className={styles.thermometer} src="thermometer2.png" alt="thermometer" />
+              <div className={styles.mercury}></div>
+              <p className={styles.emoji_container}>&#128513;</p>
             </div>
           </>
         );
@@ -293,13 +296,13 @@ const FridgeBottom: React.FC<FridgeBottomProps> = ({
   };
 
   return (
-    <div className="fridge-bottom">
-      <div className="fridge-interior" style={{ opacity: isOpen ? 1 : 0, zIndex: 0 }}>
+    <div className={styles.fridge_bottom}>
+      <div className={styles.fridge_interior} style={{ opacity: isOpen ? 1 : 0, zIndex: 0 }}>
         {renderContent()}
       </div>
 
       <div
-        className="fridge-door"
+        className={styles.fridge_door}
         onClick={onToggle}
         style={{
           position: 'absolute',
@@ -314,9 +317,9 @@ const FridgeBottom: React.FC<FridgeBottomProps> = ({
           zIndex: 10,
         }}
       >
-        <div className="border-top"></div>
-        <div className="door-handle bottom"></div>
-        <div className="border-bottom"></div>
+        <div className={styles.border_top}></div>
+        <div className={classNames(styles.door_handle, styles.bottom)}></div>
+        <div className={styles.border_bottom}></div>
       </div>
     </div>
   );

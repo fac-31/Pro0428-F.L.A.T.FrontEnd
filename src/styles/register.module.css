@@ -1,0 +1,66 @@
+.register_container {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: space-around;
+  align-items: center;
+  background-color: var(--lightbeige);
+  border: 10px double var(--darkbeige);
+  box-shadow: 0 0 0 1px var(--darkbrown);
+  border-radius: 6px;
+  padding: 20px;
+}
+
+.form_title {
+  font-size: 40px;
+  font-weight: bold;
+  color: var(--darkbrown);
+  margin-top: 5px;
+}
+
+.register_form {
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: space-around;
+  align-items: center;
+}
+
+label {
+  font-size: 25px;
+  font-weight: bold;
+  color: var(--darkbrown);
+}
+
+input[type='text'],
+input[type='email'],
+input[type='password'] {
+  background-color: var(--lightbeige);
+  border: 2px inset var(--mediumbeige);
+  margin-bottom: 10px;
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: bold;
+  font-size: 25px;
+  color: var(--darkbrown);
+}
+
+:global(#sign-up-button),
+:global(#login-button) {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 20px;
+  font-weight: bold;
+  color: var(--darkbrown);
+  background-color: var(--mediumbeige);
+  border: 2px outset var(--darkbeige);
+  border-radius: 4px;
+  box-shadow: 0px 0px 0px 1px var(--darkbrown);
+  margin: 10px 0;
+}
+
+:global(#sign-up-button:active),
+:global(#login-button:active) {
+  background-color: var(--darkbeige);
+  border: 2px inset var(--darkbrown);
+}

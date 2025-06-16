@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { useNavigate, Link as RouterLink } from 'react-router-dom';
-import { Container, Box, Typography, TextField, Button, Link, Paper } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+// import { Container, Box, Typography, TextField, Button, Link, Paper } from '@mui/material';
 import { login } from './auth.ts';
+import styles from '../../styles/login.module.css';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -51,65 +52,52 @@ const Login = () => {
     }
   };
 
+  const handleAccountCreationButtonClick = () => {
+    navigate('/register');
+  };
+
   return (
-    <Container maxWidth="xs">
-      <Box
-        sx={{
-          marginTop: 8,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-        }}
-      >
-        <Paper elevation={3} sx={{ p: 4, width: '100%' }}>
-          <Typography component="h1" variant="h5" align="center" gutterBottom>
-            Welcome Back
-          </Typography>
-          <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
-            <TextField
-              label="Email Address"
-              name="email"
-              type="email"
-              required
-              fullWidth
-              margin="normal"
-              autoFocus
-              value={formData.email}
-              onChange={handleChange}
-            />
-            <TextField
-              label="Password"
-              name="password"
-              type="password"
-              required
-              fullWidth
-              margin="normal"
-              value={formData.password}
-              onChange={handleChange}
-            />
-            {errorMsg && (
-              <Typography color="error" variant="body2" sx={{ mt: 1 }}>
-                {errorMsg}
-              </Typography>
-            )}
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-              disabled={loading}
-            >
-              {loading ? 'Signing in...' : 'Sign In'}
-            </Button>
-            <Box sx={{ textAlign: 'center' }}>
-              <Link component={RouterLink} to="/register" variant="body2">
-                {"Don't have an account? Sign Up"}
-              </Link>
-            </Box>
-          </Box>
-        </Paper>
-      </Box>
-    </Container>
+    <>
+      <div className="elevator-hand-rail">
+        <div className="hand-rail-fitting"></div>
+        <div className="hand-rail-fitting"></div>
+      </div>
+      <div className={styles.login_container}>
+        <form className={styles.sign_in_form} onSubmit={handleSubmit}>
+          <label id="email-input-label" htmlFor="email-input">
+            EMAIL ADDRESS
+          </label>
+          <input
+            id="email-input"
+            name="email"
+            type="email"
+            required
+            value={formData.email}
+            onChange={handleChange}
+          />
+          <label id="password-input-label" htmlFor="password-input">
+            PASSWORD
+          </label>
+          <input
+            id="password-input"
+            name="password"
+            type="password"
+            required
+            value={formData.password}
+            onChange={handleChange}
+          />
+          {errorMsg && <h1>{errorMsg}</h1>}
+          <button id="sign-in-button" type="submit">
+            {loading ? 'SIGNING IN...' : 'SIGN IN'}
+          </button>
+        </form>
+        <div>
+          <button id="create-account-button" onClick={handleAccountCreationButtonClick}>
+            DON'T HAVE AN ACCOUNT? SIGN UP!
+          </button>
+        </div>
+      </div>
+    </>
   );
 };
 
